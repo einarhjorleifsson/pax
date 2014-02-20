@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# generates automatically numbered vpa or ltvpa runs
+#
+ar=$1
+if [  -f RUN  ]
+then
+        run=`cat RUN`
+else
+        run=0
+fi
+
+run=`expr $run + 1`
+
+prevyr=`expr $ar - 1`
+prevrun=`expr $run - 1`
+infile=`echo *ind.dat`
+line=1
+if [ ! -f "$infile" ]
+then
+	infile=`echo *.par`
+	line=3
+fi
+if [  -f  prognosis.par  ]
+then
+	line=1
+fi
+sed -e "$line""s/[rR]un[ ]*[0-9\.]*[ ]*/Run $run. /" < $infile > tmp$$
+mv $infile $infile.$prevrun
+mv tmp$$ $infile
+if [ -f run$prevrun ]
+then
+	sed -e "s/.*$infile/$infile/" < run$prevrun > run$run
+else if [ -f run ]
+then
+	sed -e "s/.*$infile/$infile/" < run > run$run
+fi
+fi
+echo $run > RUN
+echo $run
