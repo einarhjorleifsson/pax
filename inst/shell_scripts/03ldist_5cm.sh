@@ -1,6 +1,6 @@
 :
 # breytt 16.3.2000, lnr og fjoldi sett i skra.  ag.
-# Breytt 15.6.1999 frá sunos --> solaris.  ag.
+# Breytt 15.6.1999 fr? sunos --> solaris.  ag.
 # Breytt 12.11.1990 fyrir sun-velar fra pro.  ag.
 
 PATH=$PATH:/usr/local/bin/Stofnmat
@@ -17,7 +17,7 @@ PATH=$PATH:/usr/local/bin/Stofnmat
 teg=`cat $HOME/.species`
 ar=`cat $HOME/.year`
 
-cd $HOME/$teg
+#cd $HOME/$teg
 cd ldist
 rm *.len
 
@@ -28,8 +28,8 @@ l=l
 hausar=$teg$sl$ar.pre
 lengdir=$teg$l$ar.pre
 
-#echo $hausar
-#echo $lengdir
+echo $hausar
+echo $lengdir
 
 for i in s?
 do
@@ -37,8 +37,8 @@ do
 #	For this region, specified in the file $i, pull out
 #       month, gear, length and count
 
-	project reit man vf lnr < ../data/$hausar | plokk $i|\
-				project man vf lnr > /tmp/tmp$$i
+	preproject reit man vf lnr < ../data/$hausar | plokk $i|\
+				preproject man vf lnr > /tmp/tmp$$i
 #	Now do an inner loop over seasons, for this regions
 
 	for j in t?
@@ -49,7 +49,7 @@ do
 # 		Now we want to pluck the season specified in the file $j.
 # 		After that we project out only the gear, length and number
 
-		plokk $j < /tmp/tmp$$i | project vf lnr > /tmp/tmp$$ij
+		plokk $j < /tmp/tmp$$i | preproject vf lnr > /tmp/tmp$$ij
 
 # 		Finally, an innermost loop over all gears - veidarfaeri
 
@@ -61,7 +61,7 @@ do
 #			take the fishing gear specified by the
 #			file $k out of the temporary file.
 
-			plokk $k < /tmp/tmp$$ij | project lnr > /tmp/tmp$$ijk
+			plokk $k < /tmp/tmp$$ij | preproject lnr > /tmp/tmp$$ijk
 
 # 			We have the sample numbers of interest
 #			in the file /tmp/tmp$$ijk and need to obtain the
@@ -70,7 +70,7 @@ do
 #			Also do 5cm grouping
 
 			plokk /tmp/tmp$$ijk < ../data/$lengdir |\
-				project le fj |\
+				preproject le fj |\
 				addcol lemultfj |\
 				compute 'lemultfj=le*fj' |\
 				sed 's/^\([0-9]*\)[0-4]	/\12	/
@@ -80,7 +80,7 @@ do
 # naum i synin og reiknum hversu margir fiskar eru i theim.
 
                         plokk /tmp/tmp$$ijk < ../data/$lengdir |\
-                                project lnr fj | sorttable | subtotal by lnr on fj > $k$i$j.syni
+                                preproject lnr fj | /usr/local/bin/sorttable | subtotal by lnr on fj > $k$i$j.syni
 
 #			Now we are in an innermost loop. We have
 #			a specific combination - $i,$j,$k -  of
@@ -95,9 +95,9 @@ do
 			then
 
 			#echo $k$i$j
-			sorttable < /tmp/tmp1$$ijk |\
+			/usr/local/bin/sorttable < /tmp/tmp1$$ijk |\
 			subtotal by le on fj lemultfj  |\
-				sorttable -n > $k$i$j.len
+				/usr/local/bin/sorttable -n > $k$i$j.len
 #			cp /tmp/tmp$$ijk $k$i$j.syni
 
 			else

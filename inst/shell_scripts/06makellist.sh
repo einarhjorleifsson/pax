@@ -1,6 +1,6 @@
 
 teg=`cat $HOME/.species`
-cd $HOME/$teg
+#cd $HOME/$teg
 cd ldist
 
 for i in v?
@@ -14,5 +14,5 @@ done
 done
 done
 echo $list
-cd
+cd ..
 

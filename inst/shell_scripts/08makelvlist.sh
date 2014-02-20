@@ -2,7 +2,7 @@
 
 teg=`cat $HOME/.species`
 
-cd $HOME/$teg
+#cd $HOME/$teg
 
 cd ldist
 

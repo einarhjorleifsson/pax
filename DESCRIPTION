@@ -16,3 +16,4 @@ Maintainer: Einar Hjorleifsson <einar.hjorleifsson@gmail.com>
 License: GPL-2
 Collate:
     'pax.R'
+    'pax_functions.R'

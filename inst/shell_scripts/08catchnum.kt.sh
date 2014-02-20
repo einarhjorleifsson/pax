@@ -7,34 +7,34 @@
 
 PATH=$PATH:/usr/local/bin/Stofnmat
 
-tlist=`makeltlist.sh`
-slist=`makelslist.sh`
-vlist=`makelvlist.sh`
+tlist=`/home/einarhj/r/Pakkar/pax/inst/shell_scripts/makeltlist.sh`
+slist=`/home/einarhj/r/Pakkar/pax/inst/shell_scripts/makelslist.sh`
+vlist=`/home/einarhj/r/Pakkar/pax/inst/shell_scripts/makelvlist.sh`
 
 
 teg=`cat $HOME/.species`
 
-cd $HOME/$teg
+#cd $HOME/$teg
 
-if [ ! -d catch_no ]
-then
-	cp -r /home/haf/einarhj/src/Setup/catch_no catch_no
-fi
+#if [ ! -d catch_no ]
+#then
+#	cp -r /home/haf/einarhj/src/Setup/catch_no catch_no
+#fi
 cd avelewt
 rm -f ../catch_no/*.catch
 
 echo "aldur	catch_no	tons	lbara	stdev	per_mat	tmp_permat	mat_catch" > haus
 echo "-----	--------	----	-----	-----	-------	----------	---------" >> haus
 
-gethead < haus > all.tmp
+/home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > all.tmp
 
 for j in $tlist
 do
-  gethead < haus > $j.tmp
+  /home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > $j.tmp
 
   for i in $slist
   do
-    gethead < haus > $i$j.tmp
+    /home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > $i$j.tmp
 
     for k in $vlist
     do	
@@ -45,7 +45,7 @@ do
 	wt=`grep $k$i$j < ../par/wts | sed -n 's/.*	//p'`
 	#echo " $k$i$j ---> $wt "
 	#echo 'Prepare mean lengths'
-	project aldur per_wt per_no wbara meanwt \
+	preproject aldur per_wt per_no wbara meanwt \
 		per_mat lbara stdev < $k$i$j.lewt > /tmp/tmp1$$
 
 	#echo 'Computing catch in numbers'
@@ -54,12 +54,12 @@ do
 		compute 'catch_no = totnum * per_no' |\
 		compute 'tons = catch_no * wbara' >/tmp/tmp2$$
 
-	project aldur catch_no per_no tons \
+	preproject aldur catch_no per_no tons \
 		per_wt wbara lbara stdev \
 		per_mat < /tmp/tmp2$$ > ../catch_no/$k$i$j.catch
 
 	#echo "Aggregating data over seasons, area and gears"
-	project aldur catch_no tons lbara stdev per_mat \
+	preproject aldur catch_no tons lbara stdev per_mat \
 		< ../catch_no/$k$i$j.catch |\
 	addcol tmp_permat mat_catch |\
 	compute 'lbara=lbara*catch_no;
@@ -68,12 +68,12 @@ do
 		 mat_catch=0; 
 		 if(per_mat > -1){tmp_permat=per_mat*catch_no;
 				  mat_catch=catch_no}' |\
-		 tail +3 >> $i$j.tmp
+		 tail -n +3 >> $i$j.tmp
 
 	else
 
 	echo "$k$i$j.catch empty file"
-	gethead < haus > ../catch_no/$k$i$j.catch
+	/home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > ../catch_no/$k$i$j.catch
 	fi
 
      done
@@ -81,30 +81,30 @@ do
 # reiknum saman allt fyrir eitt timabil, eitt svaedi og oll
 # veidarfaeri.
 
-   comp_catch_sizes.kt.sh $i$j.tmp  ../catch_no/$i$j.catch
+   /home/einarhj/r/Pakkar/pax/inst/shell_scripts/comp_catch_sizes.kt.sh $i$j.tmp  ../catch_no/$i$j.catch
 
    #echo "Aggregating data for one season, one region and all gears"
 
-   project aldur catch_no tons lbara stdev per_mat tmp_permat mat_catch \
-	< $i$j.tmp | tail +3 >> $j.tmp
+   preproject aldur catch_no tons lbara stdev per_mat tmp_permat mat_catch \
+	< $i$j.tmp | tail -n +3 >> $j.tmp
 
   rm -f $i$j.tmp
   done
-
+echo "line 93"
 # reiknum sama allt fyrir eitt timabil og oll svaedi og oll vf
 
-  comp_catch_sizes.kt.sh $j.tmp ../catch_no/$j.catch	
+  /home/einarhj/r/Pakkar/pax/inst/shell_scripts/comp_catch_sizes.kt.sh $j.tmp ../catch_no/$j.catch	
 
   #echo "Aggregating over all seasons"
    
-  project aldur catch_no tons lbara stdev per_mat tmp_permat mat_catch \
-	< $j.tmp | tail +3 >> all.tmp
+  preproject aldur catch_no tons lbara stdev per_mat tmp_permat mat_catch \
+	< $j.tmp | tail -n +3 >> all.tmp
   rm -f $j.tmp
 done
 
 # allur aflinn!
 
-comp_catch_sizes.kt.sh  all.tmp ../catch_no/all.catch
+/home/einarhj/r/Pakkar/pax/inst/shell_scripts/comp_catch_sizes.kt.sh  all.tmp ../catch_no/all.catch
 
 rm -f /tmp/tmp?$$ all.tmp
 

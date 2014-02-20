@@ -16,7 +16,7 @@ PATH=$PATH:/usr/local/bin/Stofnmat
 # First loop over regions - svaedi
 
 teg=`cat $HOME/.species`
-cd $HOME/$teg
+#cd $HOME/$teg
 cd keys
 rm -f *.key newkey
 
@@ -33,11 +33,12 @@ kvarnir=$teg$k$ar.pre
 for i in s?
 do
 
+
 #	For this region, specified in the file $i, pull out
 #       month, gear, length and age
 
-	project reit man vf knr < ../data/$khausar | plokk $i |\
-		project man vf knr > /tmp/tmp$$i
+	preproject reit man vf knr < ../data/$khausar | plokk $i |\
+		preproject man vf knr > /tmp/tmp$$i
 
 #	Now do an inner loop over seasons, for this regions
 
@@ -49,7 +50,7 @@ do
 # 		Now we want to pluck the season specified in the file $j.
 # 		After that we project out only the gear, length and number
 
-		plokk $j < /tmp/tmp$$i | project vf knr > /tmp/tmp$$ij
+		plokk $j < /tmp/tmp$$i | preproject vf knr > /tmp/tmp$$ij
 
 # 		Finally, an innermost loop over all gears - veidarfaeri
 
@@ -63,12 +64,12 @@ do
 
 #			Also do 5cm grouping
 
-			plokk $k < /tmp/tmp$$ij | project knr > /tmp/tmp$$ijk
-			project knr le aldur kt < ../data/$kvarnir |\
+			plokk $k < /tmp/tmp$$ij | preproject knr > /tmp/tmp$$ijk
+			preproject knr le aldur kt < ../data/$kvarnir |\
 				plokk /tmp/tmp$$ijk |\
-				project le aldur kt knr |\
-				select 'le != -1' |\
-				select 'aldur != -1' |\
+				preproject le aldur kt knr |\
+				/usr/local/bin/select 'le != -1' |\
+				/usr/local/bin/select 'aldur != -1' |\
 				sed 's/^\([0-9]*\)[0-4]	/\12	/
 				     s/^\([0-9]*\)[5-9]	/\17	/' \
 				> /tmp/tmp1$$ijk
@@ -92,13 +93,13 @@ do
 				  if (kt == 1) kt0=count ; \
 				  if (kt >= 2) kt1=count ; \
 				  ktcount=kt0+kt1" |\
-				project le aldur count kt0 kt1 ktcount |\
+				preproject le aldur count kt0 kt1 ktcount |\
 				sorttable |\
 				subtotal by le aldur on \
 				count kt0 kt1 ktcount |\
 				sorttable -n >$k$i$j.key
 #			cp /tmp/tmp$$ijk $k$i$j.syni
-			project knr < /tmp/tmp1$$ijk | count | project knr count > $k$i$j.syni
+			preproject knr < /tmp/tmp1$$ijk | count | preproject knr count > $k$i$j.syni
 
 			else
 
@@ -108,7 +109,7 @@ do
 			echo '-----	--	-----	--	--	-----' \
 				>> $k$i$j.key
 #			cp /tmp/tmp$$ijk $k$i$j.syni
-			project knr < /tmp/tmp1$$ijk | count | project knr count > $k$i$j.syni
+			preproject knr < /tmp/tmp1$$ijk | count | preproject knr count > $k$i$j.syni
 
 			fi
 

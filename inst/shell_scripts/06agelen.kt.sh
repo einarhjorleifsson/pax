@@ -16,7 +16,7 @@
 
 
 teg=`cat $HOME/.species`
-cd $HOME/$teg
+#cd $HOME/$teg
 cd ldist
 
 for i in v?
@@ -30,7 +30,7 @@ done
 done
 done
 #echo $llist
-cd
+cd ..
 
 
 
@@ -41,11 +41,11 @@ cd
 
 
 teg=`cat $HOME/.species`
-cd $HOME/$teg
-if [ ! -d agelen ]
-then
-	cp -r /home/haf/einarhj/src/Setup/agelen agelen
-fi
+#cd $HOME/$teg
+#if [ ! -d agelen ]
+#then
+#	cp -r /home/haf/einarhj/src/Setup/agelen agelen
+#fi
 
 cd keys
 rm -f ../agelen/*.a_l_k
@@ -61,33 +61,34 @@ do
 	then
 
 	#echo $i
-	project le count < $i.key |\
+	preproject le count < $i.key |\
 		plokk lengths |\
-		rename count Kl |\
-		sorttable |\
+		prerename count Kl |\
+		/usr/local/bin/sorttable |\
 		subtotal by le on Kl > /tmp/tmpKl$$
 
 #	Pull out the length, age, kt0, kt1, and count and rename count as Kalk
 #	from agelength maturitykeys.
 
-	project aldur le kt0 kt1 count < $i.key |\
+	preproject aldur le kt0 kt1 count < $i.key |\
 		plokk ages |\
-		project le aldur kt0 kt1 count |\
-		select 'aldur > 0' |\
-		rename count Kalk |\
-		sorttable > /tmp/tmpKalk$$
+		preproject le aldur kt0 kt1 count |\
+		/usr/local/bin/select 'aldur > 0' |\
+		prerename count Kalk |\
+		/usr/local/bin/sorttable > /tmp/tmpKalk$$
 	
 #	Pull out length and frequency from ldist files and rename
 #	frequency as Cl
 	
-	project le fj  < ../ldist/$i.len |\
-		rename fj Cl | sorttable > /tmp/tmp1$$
+	preproject le fj  < ../ldist/$i.len |\
+		prerename fj Cl | /usr/local/bin/sorttable > /tmp/tmp1$$
 
 #	For the maturitykeys
-
+  echo "Waldo in line 87"
+  echo $i
 	jointable /tmp/tmp1$$ /tmp/tmpKl$$ > /tmp/tmp2$$
 	jointable /tmp/tmp2$$ /tmp/tmpKalk$$ > /tmp/tmp3$$
-	project le aldur kt0 kt1 Kl Cl Kalk < /tmp/tmp3$$ |\
+	preproject le aldur kt0 kt1 Kl Cl Kalk < /tmp/tmp3$$ |\
 		addcol Calk Calkt0 Calkt1 > /tmp/tmp4$$
 
 	compute "Calk=0; Calkt0=0; Calkt1=0;\
@@ -95,7 +96,7 @@ do
 	 if((kt0+kt1) > 0) {Calkt0=(kt0/(kt0+kt1))*(Kalk/Kl)*Cl;\
 	 		  Calkt1=(kt1/(kt0+kt1))*(Kalk/Kl)*Cl;}}"\
 		 </tmp/tmp4$$ >/tmp/tmp5$$  
-	sorttable -n  < /tmp/tmp5$$ > ../agelen/$i.a_l_k
+	/usr/local/bin/sorttable -n  < /tmp/tmp5$$ > ../agelen/$i.a_l_k
 
 	rm -f /tmp/tmp*$$
 
