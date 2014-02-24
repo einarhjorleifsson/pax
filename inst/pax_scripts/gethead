@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# NAME
+#   gethead - Read headers from standard input and write to standard output.
+# 
+# SYNOPSIS
+#   gethead 
+# 
+# DESCRIPTION
+#   Input is of prelude format.  Both the column headers and the dashed lines 
+#   will be written to the standard output. 
+
+read names
+read dashes
+echo "$names"
+echo "$dashes"

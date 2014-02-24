@@ -1,0 +1,19 @@
+\name{Calc.ALK}
+\alias{Calc.ALK}
+\title{XXX}
+\usage{
+  Calc.ALK(OTH.TOT, kfile, aldur, lengd)
+}
+\arguments{
+  \item{OTH.TOT}{XXX}
+
+  \item{kfile}{XXX}
+
+  \item{aldur}{XXX}
+
+  \item{lengd}{XXX}
+}
+\description{
+  XXX
+}
+

@@ -1,0 +1,15 @@
+\name{Calc.fj}
+\alias{Calc.fj}
+\title{XXX}
+\usage{
+  Calc.fj(ALK, LDIST)
+}
+\arguments{
+  \item{ALK}{XXX}
+
+  \item{LDIST}{XXX}
+}
+\description{
+  XXX
+}
+

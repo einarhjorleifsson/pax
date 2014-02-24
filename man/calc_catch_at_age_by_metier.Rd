@@ -1,0 +1,42 @@
+\name{calc_catch_at_age_by_metier}
+\alias{calc_catch_at_age_by_metier}
+\title{XXX}
+\usage{
+  calc_catch_at_age_by_metier(metier, catch, stations,
+    ages, lengths, cond, LE, ALDUR, weight1 = 0.01,
+    weight2 = 1e-04)
+}
+\arguments{
+  \item{metier}{A character specifying the metier fro which
+  to calculate catch at age.}
+
+  \item{catch}{A value, the total catch in the metier}
+
+  \item{stations}{A data.table containing station
+  information}
+
+  \item{ages}{A data.table containing age readings}
+
+  \item{lengths}{A data.table containing length
+  distributions}
+
+  \item{cond}{XXX}
+
+  \item{LE}{XXX}
+
+  \item{ALDUR}{XX}
+
+  \item{weight1}{A value between 0 and 1. The weight in the
+  alk given to otoliths from other metiers within the
+  regiona and time period. This shitmix can be turned by
+  setting value to zero.}
+
+  \item{weight2}{A value between 0 and 1. The weight in the
+  alk given to all otoliths sampled in the year (including
+  surveys). This shitmix can be turned by setting value to
+  zero.}
+}
+\description{
+  XXX
+}
+
