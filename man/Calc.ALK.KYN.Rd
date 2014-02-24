@@ -1,0 +1,24 @@
+\name{Calc.ALK.KYN}
+\alias{Calc.ALK.KYN}
+\title{XXX}
+\usage{
+  Calc.ALK.KYN(OTH.KYN, OTH.TOT, ALK.TOT, kfile, aldur,
+    lengd)
+}
+\arguments{
+  \item{OTH.KYN}{XXX}
+
+  \item{OTH.TOT}{XXX}
+
+  \item{ALK.TOT}{XXX}
+
+  \item{kfile}{XXX}
+
+  \item{aldur}{XXX}
+
+  \item{lengd}{XXX}
+}
+\description{
+  XXX
+}
+

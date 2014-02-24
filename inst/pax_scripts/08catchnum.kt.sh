@@ -7,9 +7,9 @@
 
 PATH=$PATH:/usr/local/bin/Stofnmat
 
-tlist=`/home/einarhj/r/Pakkar/pax/inst/shell_scripts/makeltlist.sh`
-slist=`/home/einarhj/r/Pakkar/pax/inst/shell_scripts/makelslist.sh`
-vlist=`/home/einarhj/r/Pakkar/pax/inst/shell_scripts/makelvlist.sh`
+tlist=`/home/einarhj/r/Pakkar/pax/inst/pax_scripts/makeltlist.sh`
+slist=`/home/einarhj/r/Pakkar/pax/inst/pax_scripts/makelslist.sh`
+vlist=`/home/einarhj/r/Pakkar/pax/inst/pax_scripts/makelvlist.sh`
 
 
 teg=`cat $HOME/.species`
@@ -26,15 +26,15 @@ rm -f ../catch_no/*.catch
 echo "aldur	catch_no	tons	lbara	stdev	per_mat	tmp_permat	mat_catch" > haus
 echo "-----	--------	----	-----	-----	-------	----------	---------" >> haus
 
-/home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > all.tmp
+/home/einarhj/r/Pakkar/pax/inst/pax_scripts/gethead < haus > all.tmp
 
 for j in $tlist
 do
-  /home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > $j.tmp
+  /home/einarhj/r/Pakkar/pax/inst/pax_scripts/gethead < haus > $j.tmp
 
   for i in $slist
   do
-    /home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > $i$j.tmp
+    /home/einarhj/r/Pakkar/pax/inst/pax_scripts/gethead < haus > $i$j.tmp
 
     for k in $vlist
     do	
@@ -73,7 +73,7 @@ do
 	else
 
 	echo "$k$i$j.catch empty file"
-	/home/einarhj/r/Pakkar/pax/inst/shell_scripts/gethead < haus > ../catch_no/$k$i$j.catch
+	/home/einarhj/r/Pakkar/pax/inst/pax_scripts/gethead < haus > ../catch_no/$k$i$j.catch
 	fi
 
      done
@@ -81,7 +81,7 @@ do
 # reiknum saman allt fyrir eitt timabil, eitt svaedi og oll
 # veidarfaeri.
 
-   /home/einarhj/r/Pakkar/pax/inst/shell_scripts/comp_catch_sizes.kt.sh $i$j.tmp  ../catch_no/$i$j.catch
+   /home/einarhj/r/Pakkar/pax/inst/pax_scripts/comp_catch_sizes.kt.sh $i$j.tmp  ../catch_no/$i$j.catch
 
    #echo "Aggregating data for one season, one region and all gears"
 
@@ -93,7 +93,7 @@ do
 echo "line 93"
 # reiknum sama allt fyrir eitt timabil og oll svaedi og oll vf
 
-  /home/einarhj/r/Pakkar/pax/inst/shell_scripts/comp_catch_sizes.kt.sh $j.tmp ../catch_no/$j.catch	
+  /home/einarhj/r/Pakkar/pax/inst/pax_scripts/comp_catch_sizes.kt.sh $j.tmp ../catch_no/$j.catch	
 
   #echo "Aggregating over all seasons"
    
@@ -104,7 +104,7 @@ done
 
 # allur aflinn!
 
-/home/einarhj/r/Pakkar/pax/inst/shell_scripts/comp_catch_sizes.kt.sh  all.tmp ../catch_no/all.catch
+/home/einarhj/r/Pakkar/pax/inst/pax_scripts/comp_catch_sizes.kt.sh  all.tmp ../catch_no/all.catch
 
 rm -f /tmp/tmp?$$ all.tmp
 
