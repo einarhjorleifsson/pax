@@ -84,7 +84,6 @@ do
 		prerename fj Cl | /usr/local/bin/sorttable > /tmp/tmp1$$
 
 #	For the maturitykeys
-  echo "Waldo in line 87"
   echo $i
 	jointable /tmp/tmp1$$ /tmp/tmpKl$$ > /tmp/tmp2$$
 	jointable /tmp/tmp2$$ /tmp/tmpKalk$$ > /tmp/tmp3$$

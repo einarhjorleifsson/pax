@@ -90,7 +90,7 @@ do
 
   rm -f $i$j.tmp
   done
-echo "line 93"
+
 # reiknum sama allt fyrir eitt timabil og oll svaedi og oll vf
 
   /home/einarhj/r/Pakkar/pax/inst/pax_scripts/comp_catch_sizes.kt.sh $j.tmp ../catch_no/$j.catch	
