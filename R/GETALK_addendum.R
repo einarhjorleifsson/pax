@@ -37,6 +37,7 @@ catch_by_month_and_bormicon <- function(dat,gear,Land.gear,area=c(1:10),month=c(
   dimnames(tmp) <- list(month,area)
   
   i <- dat$area %in% area & dat$veman %in% month & dat$veidarf %in% gear
+
   res <- tapply(dat[,4][i],list(dat$area[i],dat$veman[i]),sum)
   res[is.na(res)] <- 0
   res <- add.to.matrix(t(res),tmp)
@@ -103,7 +104,7 @@ calc_catch_at_age_by_metier <- function(metier,catch,
   # For otoliths some shitmix is done
   # Include samples from other gears within this period and region
   id.other.gear <- stations$synis.id[stations$reg %in% area &
-                                     stations$period %in% period &
+                                     stations$time %in% period &
                                      stations$index != metier]
   ag.other.gear <- ages[!is.na(match(ages$synis.id,id.other.gear)),]
   ag.other.gear$fjoldi <- weight1
@@ -137,6 +138,7 @@ calc_catch_at_age_by_metier <- function(metier,catch,
 read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
   
   stodvar <- lesa.stodvar(ar = Year, veidarfaeri = Gear$vf)
+
   
   if(!missing(synaflokkur)) {
     stodvar <- stodvar[stodvar$synaflokkur %in% synaflokkur,]
@@ -144,6 +146,7 @@ read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
   
   #inside.reg.bcbreytt is in StdHBlib includes shallow water samples else ignored.  
   stodvar <- inside.reg.bc(stodvar)
+
   stodvar <- stodvar[stodvar$area %in% Region$area,]
   stodvar$gear <- mapvalues(stodvar$veidarf, from=Gear$vf, to=Gear$metier)
   stodvar$region <- mapvalues(stodvar$area, from=Region$area, to=Region$metier)
@@ -151,13 +154,16 @@ read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
   stodvar$index <- paste(stodvar$gear,stodvar$region,stodvar$period,sep="")
   
   kvarnir <- lesa.kvarnir(stodvar$synis.id, Species, c("kyn", "kynthroski","slaegt","oslaegt"))
+
   kvarnir <- kvarnir[!is.na(kvarnir$aldur),  ]
   kvarnir$fjoldi <- 1
   kvarnir <- join(kvarnir,stodvar[,c("synis.id","index")],"synis.id")
   
   # Ekki nota lengdir úr netaralli
   lengdir_synis.id <- stodvar$synis.id[stodvar$synaflokkur != 34]
+
   lengdir <- lesa.lengdir(lengdir_synis.id, Species)
+
   
   
   stodvar <- stodvar[!is.na(match(stodvar$synis.id,c(lengdir$synis.id,kvarnir$synis.id))),]
