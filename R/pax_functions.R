@@ -18,6 +18,11 @@ pax_setup <- function(Species,Year)
   cat(Year,file=tmpfile,append=TRUE)
   close(tmpfile)
   
+  tmpfile <- file(".pax_path",open='w')
+  pax_path <- path.package("pax")
+  cat(pax_path,file=tmpfile,append=TRUE)
+  close(tmpfile)
+  
   tmpfile <- file(".pax_scripts",open='w')
   pax_scripts <- paste(path.package("pax"),'pax_scripts',sep='/')
   cat(pax_scripts,file=tmpfile,append=TRUE)
@@ -36,7 +41,7 @@ pax_setup <- function(Species,Year)
   # Generate a log file
   tmpfile <- file("LOGFILE",open="w")
   cat("A log file on the PAX\n",file=tmpfile,append=TRUE)
-  cat(paste(" Started:",now(),"\n"),file=tmpfile,append=TRUE)
+  cat(paste(" Started:","now()","\n"),file=tmpfile,append=TRUE)
   cat(paste(" Operating on year",Year,"\n"),file=tmpfile,append=TRUE)
   cat(paste(" Operating on species",Species,"\n"),file=tmpfile,append=TRUE)
   cat(paste(" pax shell scripts path",pax_scripts,"\n"),file=tmpfile,append=TRUE)
@@ -76,6 +81,9 @@ pax_getdata <- function()
 #' 
 #' @description Runs 03ldist_5cm.sh
 #' 
+#' Return files $k$i$j.len that contain the length distribution for gear $k,
+#' region $i and season $j and $k$i$j.syni the synis_id.
+#' 
 #' @export
 pax_prepare_length <- function() 
   {
@@ -93,6 +101,10 @@ pax_prepare_length <- function()
 #' 
 #' @description Runs 05agematkey_5cm.kt.sh
 #' 
+#' Obtain age-length keys and maturity keys based on otolith samples 
+#' i.e. the number of fish with each age-length-sex 
+#' combination, based on the age-determined data.
+#' 
 #' @export
 pax_agematurity <- function() 
   {
@@ -104,6 +116,17 @@ pax_agematurity <- function()
   cat(" invoked shell script 05agematkey_5cm.kt.sh\n",file=tmpfile,append=TRUE)
   cat(" \n",file=tmpfile,append=TRUE)
   close(tmpfile)
+}
+
+#' @title Skitamix
+#' 
+#' @description Skitamix
+#' 
+#' @export
+pax_combinekeys <- function()
+{
+  path <- paste(path.package("pax"),"pax_scripts",sep="/")
+  system(paste(path,"CombineKeys.sh",sep="/"))
 }
 
 #' @title Prepare length distributions

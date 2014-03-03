@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# sorttable -- sort a reldb table
+
+trap "rm tmp$$ tmp1$$" 15 2 1 
+opt=""
+col=""
+file=""
+sortcol=""
+for i
+do
+case $1 in
+	'-n')
+		opt="$opt -n"
+		shift
+		;;
+	'-f')
+		file=$2
+		shift
+		shift
+		;;
+	*)
+		col="$col $1"
+		shift
+		;;
+esac
+done
+
+sed -n "1,2p
+3,\$w tmp$$" $1  | tee tmp1$$
+
+# The following statement works for Suns, HPs and 386/ix
+# Problems have been noted by John P. Nelson (jack@cadre.dsl.pitt.edu)
+# with older Unixes, in which case it can be replaced by
+# columns=`sed 1q tmp1$$`
+# -- the latter is somewhat slower, so I have not put it in
+# as the default.
+
+read columns < tmp1$$
+
+for i in $col
+do
+	colnr=0
+	for j in $columns
+	do
+		if [ X$i  = X$j ]
+		then
+			sortcol="$sortcol +$colnr"
+		fi
+		colnr=`expr $colnr + 1`
+	done	
+done
+sort -t"	" $opt $sortcol tmp$$
+rm tmp$$ tmp1$$
+
+

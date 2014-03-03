@@ -6,5 +6,9 @@
 }
 \description{
   Runs 05agematkey_5cm.kt.sh
+
+  Obtain age-length keys and maturity keys based on otolith
+  samples i.e. the number of fish with each age-length-sex
+  combination, based on the age-determined data.
 }
 

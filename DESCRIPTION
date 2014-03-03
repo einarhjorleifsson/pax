@@ -22,3 +22,4 @@ Collate:
     'GETALK.R'
     'GETALK_addendum.R'
     'data_GETALK.R'
+    'pax_data.R'
