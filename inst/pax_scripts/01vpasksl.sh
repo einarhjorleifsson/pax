@@ -6,16 +6,12 @@
 # Modified: Einar February 2013 to change data location from u1/data to u2/data
 # Modified: Einar February 2014 to run as a part of an R-package on linux
 
-#echo "vpasksl.sh is running now! "
+teg=`cat .species`
+ar=`cat .year`
+#paxpath=`cat .pax_path`
+paxbin=`cat .pax_bin`
 
-teg=`cat $HOME/.species`
-ar=`cat $HOME/.year`
-# Deleted below - work in the current directory
-#if [ ! -d $HOME/$teg ]
-#then
-#        mkdir $HOME/$teg
-#fi
-#cd $HOME/$teg
+
 if [ ! -d data ]
 then
         mkdir data
@@ -28,7 +24,7 @@ nfile=/net/hafkaldi/export/u2/data/$teg/$teg'n'$ar.pre
 sfile=/net/hafkaldi/export/u2/data/stodvar/s$ar.pre
 # Last years stuff: some doctoring done needs double checking
 #sfile=/net/hafkaldi/export/home/haf/einarhj/01/data/SfileDoctored.pre
-echo "Trying $kfile, $nfile, $sfile"
+echo "Trying $kfile, $nfile, $sfile"  >> ../LOGFILE
 
 if [ ! -f $kfile ]
 then
@@ -37,26 +33,28 @@ then
 	exit
 fi
 
-# stodvar
-preproject record_id ar dag man reit smrt vf < $sfile |\
-	/usr/local/bin/sorttable  > stod
+# Stodvar
+$paxbin/preproject record_id ar dag man reit smrt vf < $sfile |\
+	$paxbin/sorttable  > stod
+
 # Lengdir
-preproject record_id lnr lfj < $nfile |\
-	/usr/local/bin/sorttable > t
-jointable -a1 t stod |\
-	preproject lnr dag man ar reit smrt vf lfj |\
-	/usr/local/bin/select 'lnr > 0' |\
-	/usr/local/bin/sorttable -n > $teg'sl'$ar.pre
-preproject lnr < $teg'sl'$ar.pre |\
-	/usr/local/bin/sorttable -n > l
-plokk l < $lfile > $teg'l'$ar.pre
+$paxbin/preproject record_id lnr lfj < $nfile |\
+	$paxbin/sorttable > t
+$paxbin/jointable -a1 t stod |\
+	$paxbin/preproject lnr dag man ar reit smrt vf lfj |\
+	$paxbin/select 'lnr > 0' |\
+	$paxbin/sorttable -n > $teg'sl'$ar.pre
+$paxbin/preproject lnr < $teg'sl'$ar.pre |\
+	$paxbin/sorttable -n > l
+$paxbin/plokk l < $lfile > $teg'l'$ar.pre
+
 # Kvarnir
-preproject record_id knr kfj < $nfile |\
-	/usr/local/bin/sorttable > t
-jointable -a1 t stod |\
-	preproject knr dag man ar reit smrt vf kfj |\
-	/usr/local/bin/select 'knr > 0' |\
-	/usr/local/bin/sorttable -n > $teg'sk'$ar.pre
-preproject knr < $teg'sk'$ar.pre |\
-	/usr/local/bin/sorttable -n > k
-plokk k < $kfile > $teg'k'$ar.pre
+$paxbin/preproject record_id knr kfj < $nfile |\
+	$paxbin/sorttable > t
+$paxbin/jointable -a1 t stod |\
+	$paxbin/preproject knr dag man ar reit smrt vf kfj |\
+	$paxbin/select 'knr > 0' |\
+	$paxbin/sorttable -n > $teg'sk'$ar.pre
+$paxbin/preproject knr < $teg'sk'$ar.pre |\
+	$paxbin/sorttable -n > k
+$paxbin/plokk k < $kfile > $teg'k'$ar.pre

@@ -1,10 +1,10 @@
 :
-# Combine all the keys into one
+paxpath=`cat .pax_path`
+paxbin=`cat .pax_bin`
+PATH=$PATH:$paxpath
+teg=`cat .species`
+ar=`cat .year`
 
-#PATH=$PATH:/home/haf/einarhj/01/batch
-
-teg=`cat $HOME/.species`
-cd $HOME/$teg
 cd keys
 ##### Set all the age length keys into one file, key.all #####
 # Get the list of all .key files
@@ -18,35 +18,35 @@ list1="$list1 $i$j$k.key"
 done
 done
 done
-#echo $list1
+echo $list1
 llist=$list1
 # Get the head for the key files, needs to be  globalize
-head -2 v1s1t1.key > tmp
+head -n +2 v1s1t1.key > tmp
 # Sum all age-length keys into one large file
 for i in $llist
 do
    if test `wc -l < $i` != 2
     then
-     #echo $i
-     project le aldur count kt0 kt1 ktcount < $i | tail +3  >> tmp 
+     echo $i
+     $paxbin/preproject le aldur count kt0 kt1 ktcount < $i | tail -n +3  >> tmp 
     else
      echo " "
     fi
 done
 # Make an output file for combined age-length keys
-   sorttable < tmp |\
-   subtotal by le aldur on count kt0 kt1 ktcount |\
-   sorttable -n  > key.all
+   $paxbin/sorttable < tmp |\
+   $paxbin/subtotal by le aldur on count kt0 kt1 ktcount |\
+   $paxbin/sorttable -n  > key.all
 rm tmp
 ##### End of setting all the age length keys into one file ####
 ## May not need the stuff here   
-   sorttable < key.all |\
-   select 'le > 95' |\
-   sorttable -n  > key.95cm
+   $paxbin/sorttable < key.all |\
+   $paxbin/select 'le > 95' |\
+   $paxbin/sorttable -n  > key.95cm
   
-   sorttable < key.all |\
-   select 'le > 110' |\
-   sorttable -n  > key.110cm
+   $paxbin/sorttable < key.all |\
+   $paxbin/select 'le > 110' |\
+   $paxbin/sorttable -n  > key.110cm
 ## May not need the stuff above
 
 ### Replace 110 cm fish keys in each cell with the combined key
@@ -68,13 +68,13 @@ llist=$list2
 for i in $llist
 do
   #echo "Adding 110cm plus to file: $i"
-  head -2 key.all > $i.tmp
-  project le aldur count kt0 kt1 ktcount < $i |\
-  select 'le < 110' | tail +3 >> $i.tmp
+  head -n +2 key.all > $i.tmp
+  $paxbin/preproject le aldur count kt0 kt1 ktcount < $i |\
+  $paxbin/select 'le < 110' | tail -n +3 >> $i.tmp
 
-  project le aldur count kt0 kt1 ktcount < key.110cm |\
-  tail +3 >> $i.tmp
-  echo "               Done >110 cm replacement for file: $i.tmp" >> $HOME/$teg/LOGFILE
+  $paxbin/preproject le aldur count kt0 kt1 ktcount < key.110cm |\
+  tail -n +3 >> $i.tmp
+  echo "               Done >110 cm replacement for file: $i.tmp"
 done
 
 ### Replace 95 cm fish keys in each cell with the combined key
@@ -101,19 +101,19 @@ do
    if test `wc -l < $i` != 2
     then
       #echo "Adding 95cm plus to file: $i"
-      head -2 key.all > $i.tmp
-      project le aldur count kt0 kt1 ktcount < $i |\
-      select 'le < 95' | tail +3 >> $i.tmp
-      project le aldur count kt0 kt1 ktcount < key.95cm |\
-      tail +3 >> $i.tmp
-      echo "               Done > 95 cm replacement for file: $i.tmp" >> $HOME/$teg/LOGFILE
+      head -n +2 key.all > $i.tmp
+      $paxbin/preproject le aldur count kt0 kt1 ktcount < $i |\
+      $paxbin/select 'le < 95' | tail -n +3 >> $i.tmp
+      $paxbin/preproject le aldur count kt0 kt1 ktcount < key.95cm |\
+      tail -n +3 >> $i.tmp
+      echo "               Done > 95 cm replacement for file: $i.tmp" 
     else
      echo " "
     fi
 done
 
 ###### Finally renames the files`
-cd $HOME/$teg/keys
+
 
 for i in v?
 do
@@ -138,5 +138,3 @@ done
 echo "Well done!"
 
 
-teg=`cat $HOME/.species`
-cd $HOME/$teg/batch

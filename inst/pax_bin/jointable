@@ -1,0 +1,78 @@
+#!/bin/sh
+#
+# jointable - shell script to join  two files
+#
+# -- with an option to include all lines from first file,
+#    even if no lines in second file match
+# Original author: noone knows
+#
+# Changes: several, including corrections to always output
+#          legal reldb files, with -a1 option
+# Bug correction, 17 May, 1990: invalid handling of
+#           single column in second file.
+
+trap "rm tmp$$ haus$$" 2 14 15
+opt=""
+case $1 in
+	'-a1')
+		opt=$1
+		shift
+		;;
+	'-*')
+		echo 'Only option -a1 is supported'
+		echo '(inclusion of all records from file 1)'
+		exit 1
+esac
+if [ $# -ne 2 ]
+then
+	echo "Usage: jointable [-a1] file1 file2"
+	exit 1
+fi
+#
+# Pick up column names from first file
+#
+sed 1q < $1 | tr '\012' '	'  >haus$$
+#
+# Remove 1st column name in second file to avoid duplicate
+#
+sed 's/^[^	]*	*//
+1q' < $2 >>haus$$
+
+# Quick check for number of columns
+
+number=`wc -w < haus$$`
+if [ "$number" -gt 18 ]
+then
+	echo "Warning: Number of columns ($number) is too large" 1>&2
+fi
+
+#
+# Set up correct number of minus lines - just based on header
+#
+sed 'p
+s/[^	]/-/g' < haus$$
+sed '1,2d' < $2 >tmp$$
+#
+# Process -- special only if -a1 is used
+#
+if [ X$opt = X ]
+then
+	sed '1,2d' < $1 | join $opt -t"	" - tmp$$ 
+else
+	sed '1,2d' < $1 | 
+		join $opt -t"	" - tmp$$ |
+		awk '
+		     BEGIN{FS="	";OFS="	";n_recs='"$number"'}
+		          {
+		     		if(NF==n_recs){
+		     			print $0
+				} else {
+				   	printf("%s",$0)
+					for(i=1;i<=n_recs-NF;i++)
+						printf("	")
+					printf("\n")
+			   	}
+		           }'
+fi
+rm tmp$$ haus$$
+
