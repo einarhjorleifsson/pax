@@ -41,30 +41,30 @@ then
 fi
 
 # Stodvar
-paxbin/preproject record_id ar dag man reit smrt vf < $sfile |\
-	paxbin/sorttable  > stod
+$paxbin/preproject record_id ar dag man reit smrt vf < $sfile |\
+	$paxbin/sorttable  > stod
 
 # Lengdir
-paxbin/preproject record_id lnr lfj < $nfile |\
-	paxbin/sorttable > t
-paxbin/jointable -a1 t stod |\
-	paxbin/preproject lnr dag man ar reit smrt vf lfj |\
-	paxbin/select 'lnr > 0' |\
-	paxbin/sorttable -n > $teg'sl'$ar.pre
-paxbin/preproject lnr < $teg'sl'$ar.pre |\
-	paxbin/sorttable -n > l
+$paxbin/preproject record_id lnr lfj < $nfile |\
+	$paxbin/sorttable > t
+$paxbin/jointable -a1 t stod |\
+	$paxbin/preproject lnr dag man ar reit smrt vf lfj |\
+	$paxbin/select 'lnr > 0' |\
+	$paxbin/sorttable -n > $teg'sl'$ar.pre
+$paxbin/preproject lnr < $teg'sl'$ar.pre |\
+	$paxbin/sorttable -n > l
 
-paxbin/plokk l < $lfile > $teg'l'$ar.pre
+$paxbin/plokk l < $lfile > $teg'l'$ar.pre
 
 # Kvarnir
-paxbin/preproject record_id knr kfj < $nfile |\
-	paxbin/sorttable > t
-paxbin/jointable -a1 t stod |\
-	paxbin/preproject knr dag man ar reit smrt vf kfj |\
-	paxbin/select 'knr > 0' |\
-	paxbin/sorttable -n > $teg'sk'$ar.pre
-paxbin/preproject knr < $teg'sk'$ar.pre |\
-	paxbin/sorttable -n > k
+$paxbin/preproject record_id knr kfj < $nfile |\
+	$paxbin/sorttable > t
+$paxbin/jointable -a1 t stod |\
+	$paxbin/preproject knr dag man ar reit smrt vf kfj |\
+	$paxbin/select 'knr > 0' |\
+	$paxbin/sorttable -n > $teg'sk'$ar.pre
+$paxbin/preproject knr < $teg'sk'$ar.pre |\
+	$paxbin/sorttable -n > k
 
+$paxbin/plokk k < $kfile > $teg'k'$ar.pre
 
-paxbin/plokk k < $kfile > $teg'k'$ar.pre
