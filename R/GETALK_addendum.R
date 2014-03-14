@@ -74,9 +74,9 @@ calc_catch_at_age_by_metier <- function(metier,catch,
   # dummy, just to pass R CMD check (always happens when using ddply)
   synis.id <- fjoldi <- NULL
   
-  gear <- substr(metier,1,2)
-  area <- substr(metier,3,4)
-  period <- substr(metier,5,6)
+  gear  <- as.integer(substr(metier,2,2))
+  area  <- as.integer(substr(metier,4,4))
+  period <- as.integer(substr(metier,6,6))
 
   # Get data
   st <- stations[stations$index %in% metier,]
@@ -103,8 +103,8 @@ calc_catch_at_age_by_metier <- function(metier,catch,
   
   # For otoliths some shitmix is done
   # Include samples from other gears within this period and region
-  id.other.gear <- stations$synis.id[stations$reg %in% area &
-                                     stations$time %in% period &
+  id.other.gear <- stations$synis.id[stations$region %in% area &
+                                     stations$period %in% period &
                                      stations$index != metier]
   ag.other.gear <- ages[!is.na(match(ages$synis.id,id.other.gear)),]
   ag.other.gear$fjoldi <- weight1
@@ -148,21 +148,22 @@ read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
   stodvar <- inside.reg.bc(stodvar)
 
   stodvar <- stodvar[stodvar$area %in% Region$area,]
-  stodvar$gear <- mapvalues(stodvar$veidarf, from=Gear$vf, to=Gear$metier)
-  stodvar$region <- mapvalues(stodvar$area, from=Region$area, to=Region$metier)
-  stodvar$period <- mapvalues(stodvar$man, from=Period$month, to=Period$metier)
-  stodvar$index <- paste(stodvar$gear,stodvar$region,stodvar$period,sep="")
+  stodvar$gear <- mapvalues(stodvar$veidarf, from=Gear$vf, to=Gear$v)
+  stodvar$region <- mapvalues(stodvar$area, from=Region$area, to=Region$a)
+  stodvar$period <- mapvalues(stodvar$man, from=Period$month, to=Period$t)
+  stodvar$index <- paste("v",stodvar$gear,"s",stodvar$region,"t",stodvar$period,sep="")
   
   kvarnir <- lesa.kvarnir(stodvar$synis.id, Species, c("kyn", "kynthroski","slaegt","oslaegt"))
 
   kvarnir <- kvarnir[!is.na(kvarnir$aldur),  ]
   kvarnir$fjoldi <- 1
-  kvarnir <- join(kvarnir,stodvar[,c("synis.id","index")],"synis.id")
+  kvarnir <- join(kvarnir,stodvar[,c("synis.id","index","synaflokkur")],"synis.id")
   
   # Ekki nota lengdir úr netaralli
   lengdir_synis.id <- stodvar$synis.id[stodvar$synaflokkur != 34]
 
   lengdir <- lesa.lengdir(lengdir_synis.id, Species)
+  lengdir <- join(lengdir,stodvar[,c("synis.id","index","synaflokkur")],"synis.id")
 
   
   
