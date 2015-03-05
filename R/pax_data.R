@@ -4,6 +4,5 @@
 #' corresponding metier code appearing in the metier column.
 #' @description XXX
 #' @docType data
-#' @usage Some usage
 #' @author Einar Hjorleifsson
 NULL

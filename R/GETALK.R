@@ -22,7 +22,7 @@ MakeAlk <- function (kvarnir, tegund, kyn = F, kynth = F, okynth.gildi = 1,
 {
   medalle <- (lengd[-length(lengd)] + lengd[-1])/2
   if (missing(kvarnir)) 
-    kvarnir <- lesa.kvarnir(Stodvar$synis.id, tegund, c("kyn", 
+    kvarnir <- fjolst::lesa.kvarnir(Stodvar$synis.id, tegund, c("kyn", 
                                                         "kynthroski"))
   else if (is.na(match("kynthroski", names(kvarnir)))) 
     kvarnir$kynthroski <- rep(1, nrow(kvarnir))
@@ -144,15 +144,15 @@ function (tegund, kyn = F, kynth = F, okynth.gildi = 1, kynth.gildi = 2,
     WT <- T
   else WT <- F
   if (missing(lengdir)) 
-    lengdir <- lesa.lengdir(Stodvar$synis.id, tegund, col.names)
+    lengdir <- fjolst::lesa.lengdir(Stodvar$synis.id, tegund, col.names)
   else if (!missing(Stodvar)) 
     lengdir <- lengdir[!is.na(match(lengdir$synis.id, Stodvar$synis.id)), 
                        ]
   lengdir <- lengdir[!is.na(cut(lengdir$lengd, lengd)), ]
   if (talid) {
     if (missing(numer)) 
-      numer <- lesa.numer(Stodvar$synis.id, tegund)
-    lengdir <- Skala.med.toldum(lengdir, numer)
+      numer <- fjolst::lesa.numer(Stodvar$synis.id, tegund)
+    lengdir <- fjolst::Skala.med.toldum(lengdir, numer)
   }
   else lengdir$fj.alls <- lengdir$fjoldi
   if (is.na(match("kyn", names(lengdir)))) 
@@ -222,8 +222,9 @@ function (tegund, kyn = F, kynth = F, okynth.gildi = 1, kynth.gildi = 2,
 #' @param kv XXX
 #' @param tegund XXX
 #' @param maxage XXX
+#' @param vikmork XXX
 kv.filter <- 
-function (kv, tegund, maxage) 
+function (kv, tegund, maxage, vikmork=pax::vikmork) 
 {
   all.teg <- c(1, 2, 3)
   if (is.na(match(tegund, all.teg))) {
@@ -360,7 +361,7 @@ Reikna.thyngd <-
 function (lengdir, l.th.gogn) 
 {
   if (is.data.frame(l.th.gogn)) {
-    lengdir <- join(lengdir, l.th.gogn[, c("lengd", "oslaegt")], 
+    lengdir <- plyr::join(lengdir, l.th.gogn[, c("lengd", "oslaegt")], 
                     "lengd")
     n <- ncol(lengdir)
     names(lengdir)[n] <- "wt"
@@ -405,7 +406,7 @@ function (lengdir, Stodvar, std.toglengd)
   i <- is.na(Stodvar$toglengd) | Stodvar$toglengd > 0
   if (any(i)) 
     Stodvar$toglengd[i] <- std.toglengd
-  tmp <- join(lengdir, Stodvar[, c("synis.id", "toglengd")], 
+  tmp <- plyr::join(lengdir, Stodvar[, c("synis.id", "toglengd")], 
               "synis.id")
   lengdir$fj.alls <- lengdir$fj.alls * std.toglengd/lengdir$toglengd
   return(lengdir)
@@ -441,8 +442,9 @@ function (object, x, deriv = 0)
 #' @export
 #' 
 #' @param sfile XXX
+#' @param gearlist XXX
 calcgear <-
-function (sfile) 
+function (sfile,gearlist=pax::gearlist) 
 {
   j <- match(sfile$veidarfaeri, gearlist$veidarfaeri)
   sfile$vf <- gearlist$geartext[j]

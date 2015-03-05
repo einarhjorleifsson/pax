@@ -84,19 +84,21 @@ calc_catch_at_age_by_metier <- function(metier,catch,
   le <- lengths[!is.na(match(lengths$synis.id,st$synis.id)),]
   
   # Compile sample informations
-  info <- ddply(st,"synaflokkur",summarise,samples=length(synis.id))
+  info <- plyr::ddply(st,"synaflokkur",summarise,samples=length(synis.id))
+  if(nrow(info) == 0) info <- data.frame(synaflokkur=NA,samples=0) 
+  
   if(nrow(ag) > 0) {
-    x <- join(ag[,c("synis.id","fjoldi")],st[,c("synis.id","synaflokkur")],by="synis.id")
-    x <- ddply(x,"synaflokkur",summarise,n.ages=sum(fjoldi,na.rm=T))
-    info <- join(info,x,by="synaflokkur")
+    x <- plyr::join(ag[,c("synis.id","fjoldi")],st[,c("synis.id","synaflokkur")],by="synis.id")
+    x <- plyr::ddply(x,"synaflokkur",summarise,n.ages=sum(fjoldi,na.rm=T))
+    info <- plyr::join(info,x,by="synaflokkur")
   } else {
     info$n.ages <- 0
   }
   
   if(nrow(le) > 0) {
-    x <- join(le[,c("synis.id","fjoldi")],st[,c("synis.id","synaflokkur")],by="synis.id")
-    x <- ddply(x,"synaflokkur",summarise,n.lengths=sum(fjoldi,na.rm=T))
-    info <- join(info,x,by="synaflokkur")
+    x <- plyr::join(le[,c("synis.id","fjoldi")],st[,c("synis.id","synaflokkur")],by="synis.id")
+    x <- plyr::ddply(x,"synaflokkur",summarise,n.lengths=sum(fjoldi,na.rm=T))
+    info <- plyr::join(info,x,by="synaflokkur")
   } else {
     info$n.lengths <- 0
   }
@@ -146,7 +148,7 @@ calc_catch_at_age <- function(dat,ALDUR,landings) {
   for(i in 2:length(dat)) tmp <- rbind.alk1(tmp, dat[[i]]) 
   wt <- tmp$BiomassPerAldur/apply(tmp$FjPerAldur,2,sum)
   res <- data.frame(age=c(ALDUR),fj=c(oC),wt=c(wt),bio=c(tmp$BiomassPerAldur))
-  totcatch <- sum(wts$bormicon)
+  #totcatch <- sum(wts$bormicon)
   if(missing(landings))
   {
     r <- 1
@@ -177,7 +179,7 @@ calc_catch_at_age <- function(dat,ALDUR,landings) {
 #' @param synaflokkur Numerical vector. Containing sampleclass to use.
 read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
   
-  stodvar <- lesa.stodvar(ar = Year, veidarfaeri = Gear$vf)
+  stodvar <- fjolst::lesa.stodvar(ar = Year, veidarfaeri = Gear$vf)
 
   
   if(!missing(synaflokkur)) {
@@ -185,25 +187,25 @@ read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
   }
   
   #inside.reg.bcbreytt is in StdHBlib includes shallow water samples else ignored.  
-  stodvar <- inside.reg.bc(stodvar)
+  stodvar <- geo::inside.reg.bc(stodvar)
 
   stodvar <- stodvar[stodvar$area %in% Region$area,]
-  stodvar$gear <- mapvalues(stodvar$veidarf, from=Gear$vf, to=Gear$v)
-  stodvar$region <- mapvalues(stodvar$area, from=Region$area, to=Region$a)
-  stodvar$period <- mapvalues(stodvar$man, from=Period$month, to=Period$t)
+  stodvar$gear <- plyr::mapvalues(stodvar$veidarf, from=Gear$vf, to=Gear$v)
+  stodvar$region <- plyr::mapvalues(stodvar$area, from=Region$area, to=Region$a)
+  stodvar$period <- plyr::mapvalues(stodvar$man, from=Period$month, to=Period$t)
   stodvar$index <- paste("v",stodvar$gear,"s",stodvar$region,"t",stodvar$period,sep="")
   
-  kvarnir <- lesa.kvarnir(stodvar$synis.id, Species, c("kyn", "kynthroski","slaegt","oslaegt"))
+  kvarnir <- fjolst::lesa.kvarnir(stodvar$synis.id, Species, c("kyn", "kynthroski","slaegt","oslaegt"))
 
   kvarnir <- kvarnir[!is.na(kvarnir$aldur),  ]
   kvarnir$fjoldi <- 1
-  kvarnir <- join(kvarnir,stodvar[,c("synis.id","index","synaflokkur")],"synis.id")
+  kvarnir <- plyr::join(kvarnir,stodvar[,c("synis.id","index","synaflokkur")],"synis.id")
   
   # Ekki nota lengdir úr netaralli
   lengdir_synis.id <- stodvar$synis.id[stodvar$synaflokkur != 34]
 
-  lengdir <- lesa.lengdir(lengdir_synis.id, Species)
-  lengdir <- join(lengdir,stodvar[,c("synis.id","index","synaflokkur")],"synis.id")
+  lengdir <- fjolst::lesa.lengdir(lengdir_synis.id, Species)
+  lengdir <- plyr::join(lengdir,stodvar[,c("synis.id","index","synaflokkur")],"synis.id")
 
   
   

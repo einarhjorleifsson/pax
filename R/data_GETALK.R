@@ -2,7 +2,6 @@
 #' @title vikmork
 #' @description XXX
 #' @docType data
-#' @usage Some usage
 #' @author Einar Hjorleifsson
 NULL
 
@@ -10,7 +9,6 @@ NULL
 #' @title gearlist
 #' @description XXX
 #' @docType data
-#' @usage Some usage
 #' @author Einar Hjorleifsson
 NULL
 

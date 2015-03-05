@@ -3,6 +3,25 @@
 #' @description Set the directory structure and copies the relevant base files
 #' (only setup for cod).
 #' 
+#' The following files are generated in the working directory
+#' \itemize{
+#'   \item .species Contains the MRI species code. E.g. cod has code "01" 
+#'   \item .year Contains the year for which the catch at age is being calculated
+#'   \item .pax_bin Path to the pax binary files
+#'   \item .pax_path Path to the pax-package
+#'   \item .pax_srcipts Path to the pax shell scripts
+#'   \item LOGFILE - file that stores some logs
+#' }
+#' 
+#' The following directories are copied to the working directory
+#' \itemize{
+#'   \item agelen
+#'   \item avelewt
+#'   \item catch_no
+#'   \item keys
+#'   \item ldist
+#' } 
+#' 
 #' @export
 #' 
 #' @param Species A character of length 2 containing species number. E.g. "01"
@@ -41,7 +60,7 @@ pax_setup <- function(Species,Year)
   # Generate a log file
   tmpfile <- file("LOGFILE",open="w")
   cat("A log file on the PAX\n",file=tmpfile,append=TRUE)
-  cat(paste(" Started:","now()","\n"),file=tmpfile,append=TRUE)
+  cat(paste(" Started:",lubridate::now(),"\n"),file=tmpfile,append=TRUE)
   cat(paste(" Operating on year",Year,"\n"),file=tmpfile,append=TRUE)
   cat(paste(" Operating on species",Species,"\n"),file=tmpfile,append=TRUE)
   cat(paste(" pax shell scripts path",pax_scripts,"\n"),file=tmpfile,append=TRUE)
@@ -60,7 +79,23 @@ pax_setup <- function(Species,Year)
 
 #' @title Gets all relevant input data for generating catch in numbers
 #' 
-#' @description Script calls 01vpasksl.sh
+#' @description A wrapper around 01vpasksl.sh  It is assumed user is on the 
+#' hafro-net and has access to the /net/hafkaldi/export/u2/data directory
+#' 
+#' The following files are generated in the data directory
+#' \itemize{
+#'   \item sskyyyy.pre
+#'   \item sslyyyy.pre
+#'   \item ssskyyyy.pre
+#'   \item ssslyyyy.pre
+#'   \item k
+#'   \item l
+#'   \item stod
+#'   \item t
+#' }
+#' 
+#' In addition relevant control files (v, s and t files) are made in the keys
+#' and ldist directory
 #' 
 #' @export
 #' 
@@ -79,7 +114,7 @@ pax_getdata <- function()
 
 #' @title Prepare length distributions
 #' 
-#' @description Runs 03ldist_5cm.sh
+#' @description A wrapper around 03ldist_5cm.sh
 #' 
 #' Return files $k$i$j.len that contain the length distribution for gear $k,
 #' region $i and season $j and $k$i$j.syni the synis_id.
