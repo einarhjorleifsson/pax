@@ -70,7 +70,7 @@ do
 			then
 			#echo $k$i$j
       # THIS count STUFF NEEDS TO BE CHECKED
-			count < /tmp/tmp1$$ijk |\
+			$paxbin/count < /tmp/tmp1$$ijk |\
 				$paxbin/addcol kt0 kt1 ktcount |
 				$paxbin/compute "kt0 = 0; kt1 = 0 ; \
 				  if (kt == 1) kt0=count ; \
@@ -79,7 +79,7 @@ do
 				$paxbin/preproject le aldur count kt0 kt1 ktcount |\
 				$paxbin/sorttable |\
 				$paxbin/subtotal by le aldur on \
-				count kt0 kt1 ktcount |\
+				$paxbin/count kt0 kt1 ktcount |\
 				$paxbin/sorttable -n >$k$i$j.key
 #			cp /tmp/tmp$$ijk $k$i$j.syni
 			$paxbin/preproject knr < /tmp/tmp1$$ijk | count | $paxbin/preproject knr count > $k$i$j.syni
@@ -90,7 +90,7 @@ do
 			echo '-----	--	-----	--	--	-----' \
 				>> $k$i$j.key
 #			cp /tmp/tmp$$ijk $k$i$j.syni
-			$paxbin/preproject knr < /tmp/tmp1$$ijk | count | $paxbin/preproject knr count > $k$i$j.syni
+			$paxbin/preproject knr < /tmp/tmp1$$ijk | $paxbin/count | $paxbin/preproject knr count > $k$i$j.syni
 			fi
 			rm -f /tmp/tmp$$ijk /tmp/tmp1$$ijk
 		done

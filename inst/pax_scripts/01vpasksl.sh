@@ -22,21 +22,13 @@ kfile=/net/hafkaldi/export/u2/data/$teg/$teg'k'$ar.pre
 lfile=/net/hafkaldi/export/u2/data/$teg/$teg'l'$ar.pre
 nfile=/net/hafkaldi/export/u2/data/$teg/$teg'n'$ar.pre
 sfile=/net/hafkaldi/export/u2/data/stodvar/s$ar.pre
-#kfile=/home/einarhj/r/Pakkar/pax/vignettes_tmp/data/$teg'k'$ar.pre
-#lfile=/home/einarhj/r/Pakkar/pax/vignettes_tmp/data/$teg'l'$ar.pre
-#nfile=/home/einarhj/r/Pakkar/pax/vignettes_tmp/data/$teg'n'$ar.pre
-#sfile=/home/einarhj/r/Pakkar/pax/vignettes_tmp/data/s$ar.pre
 
-
-
-# Last years stuff: some doctoring done needs double checking
-#sfile=/net/hafkaldi/export/home/haf/einarhj/01/data/SfileDoctored.pre
-echo "Trying $kfile, $nfile, $sfile"  >> ../LOGFILE
+#echo "Trying $kfile, $nfile, $sfile"  >> ../LOGFILE
 
 if [ ! -f $kfile ]
 then
         echo $kfile does not exist.
-        echo "There are no more files to try - giving up" >> LOGFILE
+        echo "   $kfile does not exist - giving up" >> LOGFILE
 	exit
 fi
 

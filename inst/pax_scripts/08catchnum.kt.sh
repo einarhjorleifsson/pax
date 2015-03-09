@@ -5,6 +5,8 @@
 # catchnum.sh  - breytt 29. jan. 1991 fyrir sun.  ag
 # Compute catch in numbers
 
+
+# NEED FIXING, call within the package
 PATH=$PATH:/usr/local/bin/Stofnmat
 
 tlist=`/home/einarhj/r/Pakkar/pax/inst/pax_scripts/makeltlist.sh`

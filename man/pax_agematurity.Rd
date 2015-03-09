@@ -3,7 +3,11 @@
 \alias{pax_agematurity}
 \title{Prepare length distributions}
 \usage{
-pax_agematurity()
+pax_agematurity(pax = "shell")
+}
+\arguments{
+\item{pax}{character, "shell" (default) calls "original" shell scripts.
+If "R" (not implemented yet) runs native R scipts.}
 }
 \description{
 Runs 05agematkey_5cm.kt.sh

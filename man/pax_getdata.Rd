@@ -3,16 +3,22 @@
 \alias{pax_getdata}
 \title{Gets all relevant input data for generating catch in numbers}
 \usage{
-pax_getdata()
+pax_getdata(pax = "shell")
+}
+\arguments{
+\item{pax}{character, "shell" (default) calls "original" shell scripts.
+If "R" (not implemented yet) runs native R scipts.}
 }
 \description{
-A wrapper around 01vpasksl.sh  It is assumed user is on the
+A wrapper around the (01)vpasksl.sh. The
+
+It is assumed user is on the
 hafro-net and has access to the /net/hafkaldi/export/u2/data directory
 
 The following files are generated in the data directory
 \itemize{
-  \item sskyyyy.pre
-  \item sslyyyy.pre
+  \item sskyyyy.pre  otolith data
+  \item sslyyyy.pre  length data
   \item ssskyyyy.pre
   \item ssslyyyy.pre
   \item k

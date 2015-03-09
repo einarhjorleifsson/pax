@@ -9,7 +9,7 @@ pax_setup(Species, Year)
 \item{Species}{A character of length 2 containing species number. E.g. "01"
 for cod}
 
-\item{Year}{Year for which to compile the catch in numbers}
+\item{Year}{Numerial specifying the year to be compiled}
 }
 \description{
 Set the directory structure and copies the relevant base files
@@ -25,13 +25,15 @@ The following files are generated in the working directory
   \item LOGFILE - file that stores some logs
 }
 
-The following directories are copied to the working directory
+The following directories are created in the working directory
 \itemize{
   \item agelen
   \item avelewt
   \item catch_no
+  \item data
   \item keys
   \item ldist
+  \item par
 }
 }
 

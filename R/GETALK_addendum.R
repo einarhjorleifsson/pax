@@ -167,35 +167,73 @@ calc_catch_at_age <- function(dat,ALDUR,landings) {
   return(res)
 }
 
-#' @title XXX
+#' @title Obtain input data for catch-at-age calculation
 #' 
+#' @description The function reads in the input data, either from the data.frames
+#' in the fjolst-package or from the Oracle database and returns a list with three
+#' data.frames containing stations, lengths and otoliths.
+#' 
+#' The data returned are filtered given the specification in the input. E.g. if
+#' one were only interested in compiling the catch at age for Bormicon areas 1 and
+#' 2 the Region data.frame could be specified as Region = data.frame(area=c(1,2),a=c(1,1)).
+#' 
+#' Each data.frame of the returned data.frame has a column named index that specifies the metier (e.g. v1s1t1).
+#'  
 #' @export
 #' 
 #' @param Year Year
 #' @param Species Species code
-#' @param Gear data.frame containg gear and metier specifications
-#' @param Region data.frame containg bormicon area number and metier specifications
-#' @param Period data.frame containing months and metier specifications
-#' @param synaflokkur Numerical vector. Containing sampleclass to use.
-read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
-  
-  stodvar <- fjolst::lesa.stodvar(ar = Year, veidarfaeri = Gear$vf)
+#' @param Gear data.frame containg gear code in the station table (column name vf)
+#' and metier specifications (v) for the corresponding gear.
+#' @param Region data.frame containing bormicon area number (column name area) and
+#' and metier area specifications (column name a). Note that this is a devation from
+#' the original PAX specification for areas, this being based on statistical rectangles.
+#' @param Period data.frame containing months( column name month) and metier specifications (column t)
+#' @param synaflokkur Numerical vector. Containing sample class limit the catch at age
+#' calculation is based on.
+#' @param Oracle A boolean flag, if FALSE (default) the data will be obtained from the
+#' data.frame in fjolst, if TRUE (not implemented yet) the data will be read from the MRI Oracle data
+#' base (requires network connection).
+#' 
+#' @examples 
+#' # Use only longline and gill net and create one gear metier
+#' Gear <- data.frame(vf=c(1,2),v=c(1,1))
+#' # Allocate bormicon area to two metier regions (Northwest and Southwest regions)
+#' Region <- data.frame(area=c(1:16),a=c(1,rep(2,8),1,1,rep(2,5)))
+#' # One time period
+#' Period <- data.frame(month=c(1:12),t=rep(1,12))
+#' require(fjolst) # Need to load fjolst to access the data
+#' samples <- read_pax_data(Year=2014,Species=1,Gear=Gear,Region=Region,Period=Period,synaflokkur=c(2))
+#' unique(samples$stodvar$index)
 
+read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur,
+                          Oracle=FALSE) {
   
+  stodvar <- fjolst::lesa.stodvar(ar = Year, veidarfaeri = Gear$vf,oracle=Oracle)
+
   if(!missing(synaflokkur)) {
     stodvar <- stodvar[stodvar$synaflokkur %in% synaflokkur,]
   }
   
-  #inside.reg.bcbreytt is in StdHBlib includes shallow water samples else ignored.  
+  #inside.reg.bcbreytt is in StdHBlib includes shallow water samples else ignored.
+  # NOTE: If the data is taken from the data.frame in package fjolst (Oracle=FALSE)
+  #       the function below returns the original data intact
   stodvar <- geo::inside.reg.bc(stodvar)
 
   stodvar <- stodvar[stodvar$area %in% Region$area,]
-  stodvar$gear <- plyr::mapvalues(stodvar$veidarf, from=Gear$vf, to=Gear$v)
-  stodvar$region <- plyr::mapvalues(stodvar$area, from=Region$area, to=Region$a)
-  stodvar$period <- plyr::mapvalues(stodvar$man, from=Period$month, to=Period$t)
-  stodvar$index <- paste("v",stodvar$gear,"s",stodvar$region,"t",stodvar$period,sep="")
   
-  kvarnir <- fjolst::lesa.kvarnir(stodvar$synis.id, Species, c("kyn", "kynthroski","slaegt","oslaegt"))
+  tmp <- stodvar[,c("synis.id","veidarfaeri")]
+  tmp <- plyr::mapvalues(tmp$veidarfaeri,from = Gear$vf, to=Gear$v, warn_missing=FALSE)
+  
+  # Create metier shortcode
+  stodvar$gear <- plyr::mapvalues(stodvar$veidarfaeri, from=Gear$vf, to=Gear$v, warn_missing=FALSE)
+  stodvar$region <- plyr::mapvalues(stodvar$area, from=Region$area, to=Region$a,warn_missing=FALSE)
+  stodvar$period <- plyr::mapvalues(stodvar$man, from=Period$month, to=Period$t,warn_missing=FALSE)
+  
+  # The metier index
+  stodvar$index <- paste("v",stodvar$gear,"s",stodvar$region,"t",stodvar$period,sep="", oracle=Oracle)
+  
+  kvarnir <- fjolst::lesa.kvarnir(stodvar$synis.id, Species, c("kyn", "kynthroski","slaegt","oslaegt"), oracle=Oracle)
 
   kvarnir <- kvarnir[!is.na(kvarnir$aldur),  ]
   kvarnir$fjoldi <- 1
@@ -204,7 +242,7 @@ read_pax_data <- function(Year,Species,Gear,Region,Period,synaflokkur) {
   # Ekki nota lengdir úr netaralli
   lengdir_synis.id <- stodvar$synis.id[stodvar$synaflokkur != 34]
 
-  lengdir <- fjolst::lesa.lengdir(lengdir_synis.id, Species)
+  lengdir <- fjolst::lesa.lengdir(lengdir_synis.id, Species, oracle=Oracle)
   lengdir <- plyr::join(lengdir,stodvar[,c("synis.id","index","synaflokkur")],"synis.id")
 
   

@@ -2,6 +2,7 @@
 paxpath=`cat .pax_path`
 paxbin=`cat .pax_bin`
 PATH=$PATH:$paxpath
+
 teg=`cat .species`
 ar=`cat .year`
 

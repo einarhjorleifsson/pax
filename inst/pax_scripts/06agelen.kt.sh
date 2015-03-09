@@ -12,10 +12,14 @@
 #PATH=$PATH:/usr/local/bin/Stofnmat
 
 #llist=`06makellist.sh`
+paxpath=`cat .pax_path`
+paxbin=`cat .pax_bin`
+PATH=$PATH:$paxpath
+teg=`cat .species`
+ar=`cat .year`
 
 
-
-teg=`cat $HOME/.species`
+#teg=`cat $HOME/.species`
 #cd $HOME/$teg
 cd ldist
 
@@ -61,41 +65,41 @@ do
 	then
 
 	#echo $i
-	preproject le count < $i.key |\
-		plokk lengths |\
-		prerename count Kl |\
-		/usr/local/bin/sorttable |\
-		subtotal by le on Kl > /tmp/tmpKl$$
+	$paxbin/preproject le count < $i.key |\
+		$paxbin/plokk lengths |\
+		$paxbin/prerename count Kl |\
+		$paxbin/sorttable |\
+		$paxbin/subtotal by le on Kl > /tmp/tmpKl$$
 
 #	Pull out the length, age, kt0, kt1, and count and rename count as Kalk
 #	from agelength maturitykeys.
 
-	preproject aldur le kt0 kt1 count < $i.key |\
-		plokk ages |\
-		preproject le aldur kt0 kt1 count |\
-		/usr/local/bin/select 'aldur > 0' |\
-		prerename count Kalk |\
-		/usr/local/bin/sorttable > /tmp/tmpKalk$$
+	$paxbin/preproject aldur le kt0 kt1 count < $i.key |\
+		$paxbin/plokk ages |\
+		$paxbin/preproject le aldur kt0 kt1 count |\
+		$paxbin/select 'aldur > 0' |\
+		$paxbin/prerename count Kalk |\
+		$paxbin/sorttable > /tmp/tmpKalk$$
 	
 #	Pull out length and frequency from ldist files and rename
 #	frequency as Cl
 	
-	preproject le fj  < ../ldist/$i.len |\
-		prerename fj Cl | /usr/local/bin/sorttable > /tmp/tmp1$$
+	$paxbin/preproject le fj  < ../ldist/$i.len |\
+		$paxbin/prerename fj Cl | $paxbin/sorttable > /tmp/tmp1$$
 
 #	For the maturitykeys
   echo $i
-	jointable /tmp/tmp1$$ /tmp/tmpKl$$ > /tmp/tmp2$$
-	jointable /tmp/tmp2$$ /tmp/tmpKalk$$ > /tmp/tmp3$$
-	preproject le aldur kt0 kt1 Kl Cl Kalk < /tmp/tmp3$$ |\
-		addcol Calk Calkt0 Calkt1 > /tmp/tmp4$$
+	$paxbin/jointable /tmp/tmp1$$ /tmp/tmpKl$$ > /tmp/tmp2$$
+	$paxbin/jointable /tmp/tmp2$$ /tmp/tmpKalk$$ > /tmp/tmp3$$
+	$paxbin/preproject le aldur kt0 kt1 Kl Cl Kalk < /tmp/tmp3$$ |\
+		$paxbin/addcol Calk Calkt0 Calkt1 > /tmp/tmp4$$
 
-	compute "Calk=0; Calkt0=0; Calkt1=0;\
+	$paxbin/compute "Calk=0; Calkt0=0; Calkt1=0;\
 	 if(Kl>0){Calk=(Kalk/Kl)*Cl;\
 	 if((kt0+kt1) > 0) {Calkt0=(kt0/(kt0+kt1))*(Kalk/Kl)*Cl;\
 	 		  Calkt1=(kt1/(kt0+kt1))*(Kalk/Kl)*Cl;}}"\
 		 </tmp/tmp4$$ >/tmp/tmp5$$  
-	/usr/local/bin/sorttable -n  < /tmp/tmp5$$ > ../agelen/$i.a_l_k
+	$paxbin/sorttable -n  < /tmp/tmp5$$ > ../agelen/$i.a_l_k
 
 	rm -f /tmp/tmp*$$
 

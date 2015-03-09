@@ -3,7 +3,11 @@
 \alias{pax_prepare_length}
 \title{Prepare length distributions}
 \usage{
-pax_prepare_length()
+pax_prepare_length(pax = "shell")
+}
+\arguments{
+\item{pax}{character, "shell" (default) calls "original" shell scripts.
+If "R" (not implemented yet) runs native R scipts.}
 }
 \description{
 A wrapper around 03ldist_5cm.sh
