@@ -1,15 +1,18 @@
 Package: pax
 Type: Package
-Title: Calculation of fisheries catch at age
+Title: Calculation of catch at age
 Version: 0.01
 Date: 2015-03-01
-Description: Calculation of fisheries catch at age
+Description: Bla, bla, bla, ...
 VignetteBuilder: knitr
 Imports:
+    dplyr,
+    fishvise,
     fjolst,
     geo,
     lubridate,
-    plyr
+    plyr,
+    stringr
 Suggests:
     knitr
 LazyData: Yes

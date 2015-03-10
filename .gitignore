@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 vignettes_tmp
+pax_test
+inst/doc

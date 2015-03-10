@@ -78,11 +78,10 @@ do
 				  ktcount=kt0+kt1" |\
 				$paxbin/preproject le aldur count kt0 kt1 ktcount |\
 				$paxbin/sorttable |\
-				$paxbin/subtotal by le aldur on \
-				$paxbin/count kt0 kt1 ktcount |\
+				$paxbin/subtotal by le aldur on count kt0 kt1 ktcount |\
 				$paxbin/sorttable -n >$k$i$j.key
 #			cp /tmp/tmp$$ijk $k$i$j.syni
-			$paxbin/preproject knr < /tmp/tmp1$$ijk | count | $paxbin/preproject knr count > $k$i$j.syni
+			$paxbin/preproject knr < /tmp/tmp1$$ijk | $paxbin/count | $paxbin/preproject knr count > $k$i$j.syni
 			else
 			echo "      $k$i$j.syni is an empty file" >> ../LOGFILE
 			echo 'count	le	aldur	kt0	kt1	ktcount' \

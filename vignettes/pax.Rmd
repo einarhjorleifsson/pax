@@ -1,0 +1,35 @@
+---
+title: "Compiling catch at age"
+author: "Einar Hjörleifsson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Preamble
+
+Contains test for R-scripts that are suppose to mimic the PAX scripts
+
+```{r, message=FALSE}
+#require(fishvise)
+#require(dplyr)
+require(pax)
+
+oldwd <- getwd()
+setwd("~/r/Pakkar/pax/pax_test")
+```
+
+# Run the pax - no falsify
+
+```{r, eval=FALSE, echo=TRUE}
+pax_setup(Species="01",Year=2014)
+pax_getdata()
+pax_prepare_length()
+pax_agematurity() # NOTE: ERROR IN SHELL SCRIPT
+pax_agelength()
+pax_catchnum()
+```
+
