@@ -20,16 +20,16 @@ When pax="shell" user has to have access to the /net/hafkaldi/export/u2/data dir
 When pax="R" the user can specify the path to the data. The directory within
 is assumed to be the same as the net-directory.
 
-The following files are generated in the data directory
+The following files are generated in the current working directory
 \itemize{
-  \item sskyyyy.pre  otolith data
-  \item sslyyyy.pre  length data
-  \item ssskyyyy.pre
-  \item ssslyyyy.pre
-  \item k
-  \item l
-  \item stod
-  \item t
+  \item data/sskyyyy.pre  otolith data
+  \item data/sslyyyy.pre  length data
+  \item data/ssskyyyy.pre otolith station data
+  \item data/ssslyyyy.pre length station data
+  \item data/k
+  \item data/l
+  \item data/stod detail station data
+  \item data/t
 }
 
 In addition relevant control files (v, s and t files) are made in the keys

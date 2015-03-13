@@ -19,7 +19,7 @@ Contains test for R-scripts that are suppose to mimic the PAX scripts
 require(pax)
 
 oldwd <- getwd()
-setwd("~/r/Pakkar/pax/pax_test")
+#setwd("~/r/Pakkar/pax/pax_test")
 ```
 
 # Run the pax - no falsify

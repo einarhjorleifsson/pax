@@ -120,16 +120,16 @@ pax_setup <- function(Species,Year)
 #' When pax="R" the user can specify the path to the data. The directory within
 #' is assumed to be the same as the net-directory.
 #' 
-#' The following files are generated in the data directory
+#' The following files are generated in the current working directory
 #' \itemize{
-#'   \item sskyyyy.pre  otolith data
-#'   \item sslyyyy.pre  length data
-#'   \item ssskyyyy.pre
-#'   \item ssslyyyy.pre
-#'   \item k
-#'   \item l
-#'   \item stod
-#'   \item t
+#'   \item data/sskyyyy.pre  otolith data
+#'   \item data/sslyyyy.pre  length data
+#'   \item data/ssskyyyy.pre otolith station data
+#'   \item data/ssslyyyy.pre length station data
+#'   \item data/k
+#'   \item data/l
+#'   \item data/stod detail station data
+#'   \item data/t
 #' }
 #' 
 #' In addition relevant control files (v, s and t files) are made in the keys
@@ -145,6 +145,9 @@ pax_getdata <- function(pax="shell",path)
   {
   
   if(pax != "shell" & pax != "R") stop('Specify either pax="shell" or pax="R"')
+  
+  record_id <- dag <- man <- reit <- smrt <- vf <- lnr <-
+    lfj <- knr <- kfj <- 0
   
   if(pax=="shell") {
   path <- paste(path.package("pax"),'pax_scripts',sep='/')
@@ -238,6 +241,8 @@ pax_prepare_length <- function(pax="shell")
   
   if(pax != "shell" & pax != "R") stop('Specify either pax="shell" or pax="R"')
 
+  v <- s <- index <- lnr <- fj <- le <- bin <- lemultfj <- 0
+  
   if(pax=="shell") {
     path <- paste(path.package("pax"),'pax_scripts',sep='/')
     system(paste(path,"03ldist_5cm.sh",sep="/"))
@@ -370,6 +375,9 @@ pax_agematurity <- function(pax="shell")
   {
   
   if(pax != "shell" & pax != "R") stop('Specify either pax="shell" or pax="R"')
+  
+  v <- s <- index <- knr <- aldur <- le <- bin <- 
+    kt <- kt0 <- kt1 <- ktcount <- 0
   
   if(pax=="shell") {  
   path <- paste(path.package("pax"),"pax_scripts",sep="/")
@@ -517,6 +525,8 @@ pax_agelength <- function(pax="shell")
   
   if(pax != "shell" & pax != "R") stop('Specify either pax="shell" or pax="R"')
   
+  Kl <- fj <- Cl <- Kalk <- aldur <- kt0 <- kt1 <- 0
+
   if(pax=="shell") {
     
     path <- paste(path.package("pax"),"pax_scripts",sep="/")
@@ -611,6 +621,10 @@ pax_avelength <- function(pax="shell")
 {
   
   if(pax != "shell" & pax != "R") stop('Specify either pax="shell" or pax="R"')
+  
+  Calk <- le <- aldur <- Cal <- wbara <- per_wt <- per_no <-
+    lbara <- stdev <- Calkt0 <- Calkt1 <- kt0 <- kt1 <- per_mat <- 0
+  
   
   if(pax=="shell") {
     path <- paste(path.package("pax"),"pax_scripts",sep="/")

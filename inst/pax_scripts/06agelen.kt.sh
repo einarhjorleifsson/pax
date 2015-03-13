@@ -44,7 +44,7 @@ cd ..
 
 
 
-teg=`cat $HOME/.species`
+#teg=`cat $HOME/.species`
 #cd $HOME/$teg
 #if [ ! -d agelen ]
 #then

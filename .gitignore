@@ -1,6 +1,5 @@
 .Rproj.user
 .Rhistory
 .RData
-vignettes_tmp
-pax_test
 inst/doc
+inst/pax_scripts/not_used_*
