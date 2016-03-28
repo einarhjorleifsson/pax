@@ -7,7 +7,7 @@ Description: Bla, bla, bla, ...
 VignetteBuilder: knitr
 Imports:
     dplyr,
-    fishvise,
+    fishvice,
     fjolst,
     geo,
     lubridate,
@@ -21,3 +21,4 @@ Author: Hoskuldur Bjornsson <hoski@hafro.is>, Einar Hjorleifsson
 Maintainer: Einar Hjorleifsson
     <einar.hjorleifsson@gmail.com>
 License: GPL-2
+RoxygenNote: 5.0.1

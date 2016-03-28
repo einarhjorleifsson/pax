@@ -173,22 +173,22 @@ pax_getdata <- function(pax="shell",path)
     if(missing(path)) path <- "/net/hafkaldi/export/u2/data/"
     fi <- paste(path,Species,"/",Species,"k",Year,".pre",sep="")
     if(file.exists) {
-      kfile <- fishvise::read_prelude(fi)
+      kfile <- fishvice::read_prelude(fi)
     } else {
       stop(paste(fi,"does not exist. Stopped trying"))
     }
     fi <- paste(path,Species,"/",Species,"l",Year,".pre",sep="")
-    lfile <- fishvise::read_prelude(fi)
+    lfile <- fishvice::read_prelude(fi)
     fi <- paste(path,Species,"/",Species,"n",Year,".pre",sep="")
-    nfile <- fishvise::read_prelude(fi)
+    nfile <- fishvice::read_prelude(fi)
     fi <- paste(path,"stodvar/s",Year,".pre",sep="")
-    sfile <- fishvise::read_prelude(fi)
+    sfile <- fishvice::read_prelude(fi)
     
     # write files
     stod <- 
       dplyr::select(sfile,record_id,ar,dag,man,reit,smrt,vf) %>%
       dplyr::arrange(record_id)
-    fishvise::write_prelude(stod,"data/stod")
+    fishvice::write_prelude(stod,"data/stod")
     
     sl <- nfile %>%
       dplyr::select(record_id,lnr,lfj) %>%
@@ -197,13 +197,13 @@ pax_getdata <- function(pax="shell",path)
       dplyr::select(lnr,dag,man,ar,reit,smrt,vf,lfj) %>%
       dplyr::filter(lfj > 0) %>%
       dplyr::arrange(lnr)
-    fishvise::write_prelude(sl,"data/01sl2014.pre")
+    fishvice::write_prelude(sl,"data/01sl2014.pre")
     
     l <- dplyr::select(sl,lnr)
-    fishvise::write_prelude(l,"data/l")
+    fishvice::write_prelude(l,"data/l")
     
     lfile <- filter(lfile,lnr %in% l$lnr)
-    fishvise::write_prelude(lfile, "data/01l2014.pre")
+    fishvice::write_prelude(lfile, "data/01l2014.pre")
     
     sk <- nfile %>%
       dplyr::select(record_id,knr,kfj) %>%
@@ -212,13 +212,13 @@ pax_getdata <- function(pax="shell",path)
       dplyr::select(knr,dag,man,ar,reit,smrt,vf,kfj) %>%
       dplyr::filter(knr > 0) %>%
       dplyr::arrange(knr)
-    fishvise::write_prelude(sk,"data/01sk2014.pre")
+    fishvice::write_prelude(sk,"data/01sk2014.pre")
     
     k <- dplyr::select(sk,knr)
-    fishvise::write_prelude(k,"data/k")
+    fishvice::write_prelude(k,"data/k")
     
     kfile <- dplyr::filter(kfile,knr %in% k$knr)
-    fishvise::write_prelude(kfile, "data/01k2014.pre")
+    fishvice::write_prelude(kfile, "data/01k2014.pre")
     
     return(invisible(NULL))
   }
@@ -267,7 +267,7 @@ pax_prepare_length <- function(pax="shell")
     # svæði
     tmp <- metier[stringr::str_detect(metier,"s")]
     for (i in 1:length(tmp)) {
-      x <- fishvise::read_prelude(paste("ldist",tmp[i],sep="/"))
+      x <- fishvice::read_prelude(paste("ldist",tmp[i],sep="/"))
       x$s <- stringr::str_sub(tmp[i],2)
       if(i == 1) {
         area <- x
@@ -278,7 +278,7 @@ pax_prepare_length <- function(pax="shell")
     # timi
     tmp <- metier[stringr::str_detect(metier,"t")]
     for (i in 1:length(tmp)) {
-      x <- fishvise::read_prelude(paste("ldist",tmp[i],sep="/"))
+      x <- fishvice::read_prelude(paste("ldist",tmp[i],sep="/"))
       x$t <- stringr::str_sub(tmp[i],2)
       if(i == 1) {
         season <- x
@@ -289,7 +289,7 @@ pax_prepare_length <- function(pax="shell")
     # veidarfaeri
     tmp <- metier[stringr::str_detect(metier,"v")]
     for (i in 1:length(tmp)) {
-      x <- fishvise::read_prelude(paste("ldist",tmp[i],sep="/"))
+      x <- fishvice::read_prelude(paste("ldist",tmp[i],sep="/"))
       x$v <- stringr::str_sub(tmp[i],2)
       if(i == 1) {
         gear <- x
@@ -303,7 +303,7 @@ pax_prepare_length <- function(pax="shell")
                           t=unique(season$t))
     metier <- metier %>% dplyr::mutate(index=paste("v",v,"s",s,"t",t,sep=""))
     
-    hausar  <- fishvise::read_prelude("data/01sl2014.pre")
+    hausar  <- fishvice::read_prelude("data/01sl2014.pre")
     # Set metier index to samples
     hausar <- hausar %>%
       dplyr::left_join(area,by="reit") %>%
@@ -314,7 +314,7 @@ pax_prepare_length <- function(pax="shell")
       dplyr::select(lnr,index)
     
     # Set metier index to lengdir
-    lengdir <- fishvise::read_prelude("data/01l2014.pre")
+    lengdir <- fishvice::read_prelude("data/01l2014.pre")
     lengdir <- dplyr::left_join(lengdir,hausar,by="lnr") %>%
       dplyr::filter(index %in% metier$index)
     
@@ -328,7 +328,7 @@ pax_prepare_length <- function(pax="shell")
     for (i in 1:nrow(metier)) {
       x <- dplyr::filter(syni,index %in% metier$index[i]) %>% 
         dplyr::select(lnr,fj)
-      fishvise::write_prelude(x,file=paste("ldist/",metier$index[i],".syni",sep=""))
+      fishvice::write_prelude(x,file=paste("ldist/",metier$index[i],".syni",sep=""))
     }
     
     # Calclate length frequencies (5 cm interval)
@@ -352,7 +352,7 @@ pax_prepare_length <- function(pax="shell")
     for (i in 1:nrow(metier)) {
       x <- dplyr::filter(lengdir,index %in% metier$index[i]) %>% 
         dplyr::select(le,fj,lemultfj)
-      fishvise::write_prelude(x,file=paste("ldist/",metier$index[i],".syni",sep=""))
+      fishvice::write_prelude(x,file=paste("ldist/",metier$index[i],".syni",sep=""))
     }
     return(invisible(NULL))
   }
@@ -406,7 +406,7 @@ pax_agematurity <- function(pax="shell")
     # svæði
     tmp <- metier[stringr::str_detect(metier,"s")]
     for (i in 1:length(tmp)) {
-      x <- fishvise::read_prelude(paste("keys",tmp[i],sep="/"))
+      x <- fishvice::read_prelude(paste("keys",tmp[i],sep="/"))
       x$s <- stringr::str_sub(tmp[i],2)
       if(i == 1) {
         area <- x
@@ -417,7 +417,7 @@ pax_agematurity <- function(pax="shell")
     # timi
     tmp <- metier[stringr::str_detect(metier,"t")]
     for (i in 1:length(tmp)) {
-      x <- fishvise::read_prelude(paste("keys",tmp[i],sep="/"))
+      x <- fishvice::read_prelude(paste("keys",tmp[i],sep="/"))
       x$t <- stringr::str_sub(tmp[i],2)
       if(i == 1) {
         season <- x
@@ -428,7 +428,7 @@ pax_agematurity <- function(pax="shell")
     # veidarfaeri
     tmp <- metier[stringr::str_detect(metier,"v")]
     for (i in 1:length(tmp)) {
-      x <- fishvise::read_prelude(paste("keys",tmp[i],sep="/"))
+      x <- fishvice::read_prelude(paste("keys",tmp[i],sep="/"))
       x$v <- stringr::str_sub(tmp[i],2)
       if(i == 1) {
         gear <- x
@@ -443,7 +443,7 @@ pax_agematurity <- function(pax="shell")
     metier <- metier %>% 
       dplyr::mutate(index=paste("v",v,"s",s,"t",t,sep=""))
     
-    hausar  <- fishvise::read_prelude("data/01sk2014.pre")
+    hausar  <- fishvice::read_prelude("data/01sk2014.pre")
     # Set metier index to samples
     hausar <- hausar %>%
       dplyr::left_join(area,by="reit") %>%
@@ -454,7 +454,7 @@ pax_agematurity <- function(pax="shell")
       dplyr::select(knr,index)
     
     # Set metier index to lengdir
-    kvarnir <- fishvise::read_prelude("data/01k2014.pre")
+    kvarnir <- fishvice::read_prelude("data/01k2014.pre")
     kvarnir <- dplyr::left_join(kvarnir,hausar,by="knr") %>%
       dplyr::filter(aldur != -1) %>%
       dplyr::filter(le != -1) %>%
@@ -472,7 +472,7 @@ pax_agematurity <- function(pax="shell")
         dplyr::select(knr,count)
       if(nrow(x) > 0) {
         # EINAR - pretty sure this is supposed to key directory keys
-        fishvise::write_prelude(x,file=paste("keys/",metier$index[i],".syni",sep=""))
+        fishvice::write_prelude(x,file=paste("keys/",metier$index[i],".syni",sep=""))
       }
     }
     
@@ -492,7 +492,7 @@ pax_agematurity <- function(pax="shell")
       x <- dplyr::filter(tmp,index %in% metier$index[i]) %>%
         dplyr::select(le,aldur,count,kt0,kt1,ktcount)
       x$le <- as.integer(x$le)
-      fishvise::write_prelude(x,file=paste("keys/",metier$index[i],".key",sep=""))
+      fishvice::write_prelude(x,file=paste("keys/",metier$index[i],".key",sep=""))
     }
     return(invisible(NULL))
   }
@@ -550,11 +550,11 @@ pax_agelength <- function(pax="shell")
     
     for(j in 1:length(key_files)) {
       
-      key <- fishvise::read_prelude(paste("keys/",key_files[j],sep=""))
+      key <- fishvice::read_prelude(paste("keys/",key_files[j],sep=""))
       
       if(!is.null(key)) {
         
-        le  <- fishvise::read_prelude(paste("ldist/",le_files[j],sep=""))
+        le  <- fishvice::read_prelude(paste("ldist/",le_files[j],sep=""))
         index <- stringr::str_sub(key_files[j],1,6)
         
         tmp.Kl <- key %>%
@@ -600,7 +600,7 @@ pax_agelength <- function(pax="shell")
         
         tmp5 <- dplyr::arrange(tmp5,le,aldur)
         
-        fishvise::write_prelude(tmp5,file=paste("agelen/",index[j],".a_l_k",sep=""))
+        fishvice::write_prelude(tmp5,file=paste("agelen/",index[j],".a_l_k",sep=""))
       }
     }
     return(invisible(NULL))
@@ -641,13 +641,13 @@ pax_avelength <- function(pax="shell")
   if(pax=="R") {
     alk_files <- dir("agelen",pattern=c(".a_l_k"))
     metier <- stringr::str_sub(alk_files,1,6)
-    cond <- fishvise::read_prelude("keys/cond")
+    cond <- fishvice::read_prelude("keys/cond")
     
     for(j in 1:length(alk_files)) {
       
       #print(paste(j, metier[j]))
       
-      alk <- fishvise::read_prelude(paste("agelen/",alk_files[j],sep=""))
+      alk <- fishvice::read_prelude(paste("agelen/",alk_files[j],sep=""))
       
       if(!is.null(alk)) {
         a <- cond$condition[cond$vst %in% metier[j]]
@@ -717,7 +717,7 @@ pax_avelength <- function(pax="shell")
         tmp14 <- dplyr::left_join(tmp10,tmp13,by="aldur") %>%
           dplyr::mutate(meanwt=totwt/totfre)
         tmp14 <- as.data.frame(tmp14)
-        fishvise::write_prelude(tmp14,file=paste("avelewt/",metier[j],".lewt",sep=""))
+        fishvice::write_prelude(tmp14,file=paste("avelewt/",metier[j],".lewt",sep=""))
       }
     }
     return(invisible(NULL))
