@@ -74,7 +74,7 @@ do
 
 	else
 
-	echo "$k$i$j.catch empty file"
+	echo "$k$i$j.catch empty file" >> ../LOGFILE
 	/home/einarhj/r/Pakkar/pax/inst/pax_scripts/gethead < haus > ../catch_no/$k$i$j.catch
 	fi
 

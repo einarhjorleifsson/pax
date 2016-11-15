@@ -1,7 +1,6 @@
 # TODO:
 #  1) Go through all shell scripts and ensure they are calling functions 
 #     from within the pax-package
-#  2) Make a switch in all pax-functions: param: pax "shell" vs. "R"
 
 
 #' @title PAX setup
@@ -35,7 +34,7 @@
 #' @param Species A character of length 2 containing species number. E.g. "01"
 #' for cod
 #' @param Year Numerial specifying the year to be compiled
-pax_setup <- function(Species,Year) 
+pax_setup <- function(Species, Year) 
   {
   
   tmpfile <- file(".species",open='w')
@@ -141,7 +140,7 @@ pax_setup <- function(Species,Year)
 #' If "R" (not implemented yet) runs native R scripts.
 #' @param path The path to the data. Only works if pax="R". If missing (default)
 #' the data is obtained from: /net/hafkaldi/export/u2/data.
-pax_getdata <- function(pax="shell",path) 
+pax_getdata <- function(pax="shell", path) 
   {
   
   if(pax != "shell" & pax != "R") stop('Specify either pax="shell" or pax="R"')
@@ -150,17 +149,17 @@ pax_getdata <- function(pax="shell",path)
     lfj <- knr <- kfj <- 0
   
   if(pax=="shell") {
-  path <- paste(path.package("pax"),'pax_scripts',sep='/')
-  cmd <- paste(path,"01vpasksl.sh",sep="/")
-  system(cmd)
-  
-  tmpfile <- file("LOGFILE",open="a")
-  cat("\nCalled function: pax_getdata\n",file=tmpfile,append=TRUE)
-  cat(paste(" invoked: ",cmd,"\n",sep=""),file=tmpfile,append=TRUE)
-  cat(" \n",file=tmpfile,append=TRUE)
-  close(tmpfile)
-  
-  return(invisible(NULL))
+    path <- paste(path.package("pax"),'pax_scripts',sep='/')
+    cmd <- paste(path,"01vpasksl.sh",sep="/")
+    system(cmd)
+    
+    tmpfile <- file("LOGFILE",open="a")
+    cat(" \n",file=tmpfile,append=TRUE)
+    cat("\nCalled function: pax_getdata\n",file=tmpfile,append=TRUE)
+    cat(paste(" invoked: ",cmd,"\n",sep=""),file=tmpfile,append=TRUE)
+    close(tmpfile)
+    
+    return(invisible(NULL))
   }
   
   if(pax=="R") {
@@ -172,7 +171,7 @@ pax_getdata <- function(pax="shell",path)
     # read files
     if(missing(path)) path <- "/net/hafkaldi/export/u2/data/"
     fi <- paste(path,Species,"/",Species,"k",Year,".pre",sep="")
-    if(file.exists) {
+    if(file.exists(fi)) {
       kfile <- fishvice::read_prelude(fi)
     } else {
       stop(paste(fi,"does not exist. Stopped trying"))
@@ -248,9 +247,9 @@ pax_prepare_length <- function(pax="shell")
     system(paste(path,"03ldist_5cm.sh",sep="/"))
     
     tmpfile <- file("LOGFILE",open="a")
+    cat(" \n",file=tmpfile,append=TRUE)
     cat("Called function: pax_prepare_length\n",file=tmpfile,append=TRUE)
     cat(" invoked shell script 03ldist_5cm.sh\n",file=tmpfile,append=TRUE)
-    cat(" \n",file=tmpfile,append=TRUE)
     close(tmpfile)
     return(invisible(NULL)) 
   }
@@ -352,7 +351,7 @@ pax_prepare_length <- function(pax="shell")
     for (i in 1:nrow(metier)) {
       x <- dplyr::filter(lengdir,index %in% metier$index[i]) %>% 
         dplyr::select(le,fj,lemultfj)
-      fishvice::write_prelude(x,file=paste("ldist/",metier$index[i],".syni",sep=""))
+      fishvice::write_prelude(x,file=paste("ldist/",metier$index[i],".len",sep=""))
     }
     return(invisible(NULL))
   }
@@ -379,16 +378,15 @@ pax_agematurity <- function(pax="shell")
   v <- s <- index <- knr <- aldur <- le <- bin <- 
     kt <- kt0 <- kt1 <- ktcount <- 0
   
-  if(pax=="shell") {  
-  path <- paste(path.package("pax"),"pax_scripts",sep="/")
-  system(paste(path,"05agematkey_5cm.kt.sh",sep="/"))
-  
-  tmpfile <- file("LOGFILE",open="a")
-  cat("Called function: pax_agematurity\n",file=tmpfile,append=TRUE)
-  cat(" invoked shell script 05agematkey_5cm.kt.sh\n",file=tmpfile,append=TRUE)
-  cat(" \n",file=tmpfile,append=TRUE)
-  close(tmpfile)
-  return(invisible(NULL))
+  if(pax=="shell") {
+    tmpfile <- file("LOGFILE",open="a")
+    cat(" \n",file=tmpfile,append=TRUE)
+    cat("Called function: pax_agematurity\n",file=tmpfile,append=TRUE)
+    cat(" invoked shell script 05agematkey_5cm.kt.sh\n",file=tmpfile,append=TRUE)
+    close(tmpfile)
+    path <- paste(path.package("pax"),"pax_scripts",sep="/")
+    system(paste(path,"05agematkey_5cm.kt.sh",sep="/"))
+    return(invisible(NULL))
   }
   
   if(pax=="R") {
@@ -529,14 +527,14 @@ pax_agelength <- function(pax="shell")
 
   if(pax=="shell") {
     
-    path <- paste(path.package("pax"),"pax_scripts",sep="/")
-    system(paste(path,"06agelen.kt.sh",sep="/"))
-    
     tmpfile <- file("LOGFILE",open="a")
+    cat(" \n",file=tmpfile,append=TRUE)
     cat("Called function: pax_agelength\n",file=tmpfile,append=TRUE)
     cat(" invoked shell script 06agelen.kt.sh\n",file=tmpfile,append=TRUE)
-    cat(" \n",file=tmpfile,append=TRUE)
     close(tmpfile)
+    
+    path <- paste(path.package("pax"),"pax_scripts",sep="/")
+    system(paste(path,"06agelen.kt.sh",sep="/"))
     
     return(invisible(NULL))
   }
@@ -625,16 +623,17 @@ pax_avelength <- function(pax="shell")
   Calk <- le <- aldur <- Cal <- wbara <- per_wt <- per_no <-
     lbara <- stdev <- Calkt0 <- Calkt1 <- kt0 <- kt1 <- per_mat <- 0
   
-  
   if(pax=="shell") {
+    
+    tmpfile <- file("LOGFILE",open="a")
+    cat(" \n",file=tmpfile,append=TRUE)
+    cat("Called function: pax_avelength\n",file=tmpfile,append=TRUE)
+    cat(" invoked shell script 07avelewt.kt.sh\n",file=tmpfile,append=TRUE)
+    close(tmpfile)
+    
     path <- paste(path.package("pax"),"pax_scripts",sep="/")
     system(paste(path,"07avelewt.kt.sh",sep="/"))
     
-    tmpfile <- file("LOGFILE",open="a")
-    cat("Called function: pax_avelength\n",file=tmpfile,append=TRUE)
-    cat(" invoked shell script 07avelewt.kt.sh\n",file=tmpfile,append=TRUE)
-    cat(" \n",file=tmpfile,append=TRUE)
-    close(tmpfile)
     return(invisible(NULL))
   }
   
@@ -740,14 +739,16 @@ pax_catchnum <- function(pax="shell")
   if(pax != "shell" & pax != "R") stop('Specify either pax="shell" or pax="R"')
   
   if(pax=="shell") {
+    
+    tmpfile <- file("LOGFILE",open="a")
+    cat(" \n",file=tmpfile,append=TRUE)
+    cat("Called function: pax_catchnum\n",file=tmpfile,append=TRUE)
+    cat(" invoked shell script 08catchnum.kt.sh\n",file=tmpfile,append=TRUE)
+    close(tmpfile)
+    
     path <- paste(path.package("pax"),"pax_scripts",sep="/")
     system(paste(path,"08catchnum.kt.sh",sep="/"))
     
-    tmpfile <- file("LOGFILE",open="a")
-    cat("Called function: pax_catchnum\n",file=tmpfile,append=TRUE)
-    cat(" invoked shell script 08catchnum.kt.sh\n",file=tmpfile,append=TRUE)
-    cat(" \n",file=tmpfile,append=TRUE)
-    close(tmpfile)
     return(invisible(NULL))
   }
   

@@ -134,7 +134,7 @@ POWER=`grep $i < ../keys/cond | sed 's/.*	.*	\(.*\)/\1/'`
 
 	else
 
-	echo "$i empty file -for calculating avg length and weights"
+	echo "$i empty file -for calculating avg length and weights" >> ../LOGFILE
 echo 'aldur	wbara	meanwt	lbara	stdev	per_no	per_wt	per_mat' \
 	> ../avelewt/$i.lewt
 echo '-----	-----	------	-----	-----	---------	---------	-------' \

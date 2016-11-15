@@ -105,7 +105,7 @@ do
 
 	else
 
-	echo "$i.a_l_k : An empty file, can not create catch at age for this metier "
+	echo "$i.a_l_k : An empty file, can not create catch at age for this metier " >> ../LOGFILE
 	echo "le	aldur	kt0	kt1	Kl	Cl	Kalk	Calk" \
 		> ../agelen/$i.a_l_k
 	echo "--	-----	---	---	--	--	----	----" \
